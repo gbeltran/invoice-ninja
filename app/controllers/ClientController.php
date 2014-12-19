@@ -228,7 +228,9 @@ class ClientController extends \BaseController {
 			$client->industry_id = Input::get('industry_id') ? : null;
 			$client->currency_id = Input::get('currency_id') ? : null;
 			$client->payment_terms = Input::get('payment_terms') ? : 0;
-			$client->website = trim(Input::get('website'));
+			$client->website = trim(Input::get('website'));                        
+			$client->rfc = trim(Input::get('rfc'));
+			$client->suburb = trim(Input::get('suburb'));
 
 			$client->save();
 

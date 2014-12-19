@@ -11,6 +11,8 @@ class Client extends EntityModel
 	public static $fieldPostalCode = 'Client - Postal Code';
 	public static $fieldNotes = 'Client - Notes';
 	public static $fieldCountry = 'Client - Country';
+	public static $fieldRfc = 'Client - RFC';
+	public static $fieldSuburb = 'Client - Suburb';
 
 	public function account()
 	{
@@ -106,6 +108,12 @@ class Client extends EntityModel
 		}
 		if ($this->postal_code) {
 			$str .= $this->postal_code;
+		}
+		if ($this->rfc) {
+			$str .= $this->rfc;
+		}
+		if ($this->suburb) {
+			$str .= $this->suburb;
 		}
 		if ($this->country) {
 			$str .= '<br/>' . $this->country->name;			

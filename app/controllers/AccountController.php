@@ -238,6 +238,8 @@ class AccountController extends \BaseController {
 				$client->city = '';
 				$client->state = '';
 				$client->postal_code = '';
+				$client->rfc = '';
+				$client->suburb = '';
 				$client->work_phone = '';
 				$client->work_email = '';
 			
@@ -513,7 +515,15 @@ class AccountController extends \BaseController {
 				else if ($field == Contact::$fieldEmail && !$contact->email)
 				{
 					$contact->email = strtolower($value);
-				}				
+				}
+                                else if ($field == Client::$fieldRfc && !$client->rfc)
+				{
+					$client->rfc = $value;
+				}
+                                else if ($field == Client::$fieldSuburb && !$client->suburb)
+				{
+					$client->suburb = $value;
+				}
 			}
 
 			$client->save();
@@ -560,6 +570,8 @@ class AccountController extends \BaseController {
 			Client::$fieldPhone,
 			Client::$fieldAddress1,
 			Client::$fieldAddress2,
+			Client::$fieldRfc,
+			Client::$fieldSuburb,
 			Client::$fieldCity,
 			Client::$fieldState,
 			Client::$fieldPostalCode,
@@ -600,6 +612,8 @@ class AccountController extends \BaseController {
 						'street|address|address1' => Client::$fieldAddress1,	
 						'street2|address2' => Client::$fieldAddress2,						
 						'city' => Client::$fieldCity,
+						'rfc' => Client::$fieldRfc,
+						'suburb' => Client::$fieldSuburb,
 						'state|province' => Client::$fieldState,
 						'zip|postal|code' => Client::$fieldPostalCode,
 						'country' => Client::$fieldCountry,
@@ -795,6 +809,8 @@ class AccountController extends \BaseController {
 			$account->datetime_format_id = Input::get('datetime_format_id') ? Input::get('datetime_format_id') : null;
 			$account->currency_id = Input::get('currency_id') ? Input::get('currency_id') : 1; // US Dollar
 			$account->language_id = Input::get('language_id') ? Input::get('language_id') : 1; // English
+			$account->rfc = trim(Input::get('rfc'));
+			$account->suburb = trim(Input::get('suburb'));
 			$account->save();
 
 			if (Auth::user()->id === $user->id)

@@ -3,8 +3,8 @@
 return array(
 
    // client
-      'organization' => 'Empresa',
-   'name' => 'Nombre', //Razon social-Colombia,
+  'organization' => 'Empresa',
+    'name' => 'Nombre', //Razon social-Colombia,
    'website' => 'Sitio Web',
    'work_phone' => 'Teléfono',
    'address' => 'Dirección',
@@ -462,6 +462,10 @@ return array(
   'reason_for_canceling' => 'Help us improve our site by telling us why you\'re leaving.',
   'discount_percent' => 'Percent',
   'discount_amount' => 'Amount',
+    
+    'cfdi'  => 'CFDI',
+    'askfor'  => 'Solicitar',
+    'cfdifilescreated'  => 'Los Archivos digitales fueron creados exitosamente',
 
 
 );

@@ -141,6 +141,13 @@ class InvoiceRepository
 
     return $table->addColumn('due_date', function($model) { return Utils::fromSqlDate($model->due_date); })
         ->addColumn('invoice_status_name', function($model) { return $model->invoice_status_name; })
+        ->addColumn('cfdi', function($model) { 
+            if ($model->invoice_status_name == 'Paid')
+                return \Cfdi::getLink($model->public_id);
+            else
+                return '-';
+            
+        })
         ->addColumn('dropdown', function($model) use ($entityType)
         { 
           if ($model->is_deleted)

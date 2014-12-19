@@ -27,7 +27,7 @@ class InvoiceController extends \BaseController {
 		$data = [
 			'title' => trans('texts.invoices'),
 			'entityType'=>ENTITY_INVOICE, 
-			'columns'=>Utils::trans(['checkbox', 'invoice_number', 'client', 'invoice_date', 'invoice_total', 'balance_due', 'due_date', 'status', 'action'])
+			'columns'=>Utils::trans(['checkbox', 'invoice_number', 'client', 'invoice_date', 'invoice_total', 'balance_due', 'due_date', 'status', 'cfdi', 'action'])
 		];
 
 		$recurringInvoices = Invoice::scope()->where('is_recurring', '=', true);

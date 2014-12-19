@@ -42,6 +42,8 @@
 			{{ Former::text('address2') }}
 			{{ Former::text('city') }}
 			{{ Former::text('state') }}
+			{{ Former::text('suburb') }}
+			{{ Former::text('rfc') }}
 			{{ Former::text('postal_code') }}
 			{{ Former::select('country_id')->addOption('','')
 				->fromQuery($countries, 'name', 'id') }}

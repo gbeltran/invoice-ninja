@@ -491,4 +491,9 @@ return array(
   'discount_percent' => 'Percent',
   'discount_amount' => 'Amount',
     
+    //
+    'cfdi'  => 'CFDI',
+    'askfor'  => 'Request',
+    'cfdifilescreated'  => 'Digital Files were created',
+    
 );

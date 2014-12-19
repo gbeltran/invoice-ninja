@@ -51,6 +51,8 @@
 			{{ Former::text('address1') }}
 			{{ Former::text('address2') }}
 			{{ Former::text('city') }}
+			{{ Former::text('rfc') }}
+			{{ Former::text('suburb') }}
 			{{ Former::text('state') }}
 			{{ Former::text('postal_code') }}
 			{{ Former::select('country_id')->addOption('','')
