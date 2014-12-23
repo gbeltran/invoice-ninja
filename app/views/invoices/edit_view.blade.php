@@ -329,7 +329,7 @@
 			{{ Button::success(trans('texts.restore'), ['onclick' => 'submitAction("restore")'])->append_with_icon('cloud-download') }}
 		@endif
                 
-                {{ Button::success(trans("texts.cancelarCfdi"), array('id' => 'cancelCfdiButton', 'onclick' => 'onCancelCfdi()')) }}
+                @if (!$cfdi){{ Button::success(trans("texts.cancelarCfdi"), array('id' => 'cancelCfdiButton', 'onclick' => 'onCancelCfdi()')) }} @endif
 
 	</div>
 	<p>&nbsp;</p>

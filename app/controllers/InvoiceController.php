@@ -280,7 +280,9 @@ class InvoiceController extends \BaseController {
 		}
 			
                     $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
+                    $data['cfdi'] = false;
                     if(sizeof($_cfdi)>0){
+                        $data['cfdi'] = $_cfdi['flag'] == 1 ? true : false;
                         return View::make('invoices.edit_view', $data);
                     }	
                 
@@ -369,9 +371,8 @@ class InvoiceController extends \BaseController {
                 if ($publicId):
                     $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
                     $all = Input::all();
-                    if(isset($all['_formType']))
-                        $this->CFDI($publicId, $all['_formType']);                           
-                        
+                    if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
+                        $this->CFDI($publicId, $all['_formType']);   
                         
                     if(sizeof($_cfdi)>0){
                         $url = "{$entityType}s/" . $publicId . '/edit';
@@ -484,7 +485,7 @@ class InvoiceController extends \BaseController {
                         
                         $all = Input::all();
                         if(isset($all['_formType']))
-                            $this->CFDI($publicId, $all['_formType']);                           
+                            $this->CFDI($publicId, $all['_formType']); 
                         
 			$url = "{$entityType}s/" . $invoice->public_id . '/edit';
 			return Redirect::to($url);
@@ -583,6 +584,11 @@ class InvoiceController extends \BaseController {
                     Cfdi::saveCFDI($upd);
 
                     try {
+                        $file = file_get_contents("http://".substr($files->pdf,2));
+                        file_put_contents(public_path().'/cfdi.pdf', $file);
+                        $file = file_get_contents("http://".substr($files->xml,2));
+                        file_put_contents(public_path().'/cfdi.xml', $file);
+                        
                         $contact = $invoice->client->contacts;
                         $array = array(
                             'email' => $contact[0]->email,
@@ -590,13 +596,20 @@ class InvoiceController extends \BaseController {
                             'invoiceAmount' => $invoice->amount,
                             'entityType' => 'invoice',
                             'pdf' => $files->pdf,
-                            'xml' => $files->xml
+                            'xml' => $files->xml,
+                            'p_pfd' => public_path().'/cfdi.pdf',
+                            'p_xml' => public_path().'/cfdi.xml',
                         );
 
                         Mail::send('emails.cfdi_html', $array, function($message) use ($array)
                         {
                             $message->to($array['email'])->subject('Archivos CFDI');
+                             $message->attach($array['p_pfd']);
+                             $message->attach($array['p_xml']);
                         });
+                        
+                        unlink(public_path().'/cfdi.pdf');
+                        unlink(public_path().'/cfdi.xml');
 
                     } catch (Exception $exc) {
                         Session::flash('error', $exc->getTraceAsString());	
