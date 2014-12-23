@@ -87,15 +87,13 @@ class Cfdi extends Eloquent
 
     public static function setReceptor($address)
     {
-        $account = DB::table('contacts')->where('user_id', '=', $address->client->id)->first();
-        $email = $account->email;
-        $phone = $account->phone;
+        $contact = $address->client->contacts;
         $receptor = array(
-            'name'              => $address->client->name,
-            'alias'             => $address->client->name,
+            'name'              => $contact[0]->first_name . ' '. $contact[0]->last_name,
+            'alias'             => $contact[0]->first_name . ' '. $contact[0]->last_name,
             'rfc'               => $address->client->rfc,
             'logo'              => '',
-            'phone'             => $phone,
+            'phone'             => $contact[0]->phone,
             'address'           => array(
                 'id'            =>  $address->client->id,
                 'street'        =>  $address->client->address1,
@@ -104,8 +102,8 @@ class Cfdi extends Eloquent
                 'state_id'      =>  $address->client->state,
                 'city_id'       =>  $address->client->city,
                 'zipcode_id'    =>  $address->client->postal_code,
-                'email'         =>  $email,
-                'contact_name'  =>  $address->client->name,
+                'email'         =>  $contact[0]->email,
+                'contact_name'  =>  $contact[0]->first_name . ' '. $contact[0]->last_name,
                 'colony'        =>  $address->client->suburb
             )
         );
@@ -115,24 +113,91 @@ class Cfdi extends Eloquent
 
     public static function saveCfdi($cfdi)
     {
-
         $data = Cfdi::where('invoice_id','=', $cfdi->sale_id)->first();
-            if(sizeof($data)>0){
-                $data->pdf = $cfdi->pdf;
-                $data->xml = $cfdi->xml;
-                $data->cancel = $cfdi->cancel_id;
-                $data->invoice_id = $cfdi->sale_id;
-                $data->save();
-                return $data;
-            }else{			
-                $new = new Cfdi;
-                $new->pdf = $cfdi->pdf;
-                $new->xml = $cfdi->xml;
-                $new->cancel = $cfdi->cancel_id;
-                $new->invoice_id = $cfdi->sale_id;
-                $new->save();
-                return $new;
-            }
+        if(sizeof($data)>0){
+            $data->pdf = $cfdi->pdf;
+            $data->xml = $cfdi->xml;
+            $data->cancel = $cfdi->cancel_id;
+            $data->invoice_id = $cfdi->sale_id;
+            $data->save();
+            return $data;
+        }else{			
+            $new = new Cfdi;
+            $new->pdf = $cfdi->pdf;
+            $new->xml = $cfdi->xml;
+            $new->cancel = $cfdi->cancel_id;
+            $new->invoice_id = $cfdi->sale_id;
+            $new->flag = 0;
+            $new->save();
+            return $new;
+        }
+    }
+    
+    public static function cancelCfdi($publicId)
+    {
+         
+        $cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
+         
+        $url = INVOICE_API_CANCELAR;
+        $json =  array(
+            'public_key'    =>  INVOICE_API_APIPUBLIC, 
+            'private_key'   =>  INVOICE_API_APISECRET,
+            'uid'           =>  $cfdi->cancel,
+        );   
+        
+        $data = array('json' => json_encode($json));
+            
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data),
+                ),
+            );
+            
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);  
+            $response = json_decode($result);
+            
+            
+            if ($response->code == 0){
+                $cfdi->flag = 1;
+                 $cfdi->save();             
+            }        
+         
+         return $data;
+     }
+    
+    
+    public static function sendCfdi($publicId, $invoice)
+    {            
+//        $data = Cfdi::setJson($publicId, $invoice);
+//        echo "<pre>";print_R($data);
+        
+        try {
+            $json =  json_encode(Cfdi::setJson($publicId, $invoice));
+
+            $url = INVOICE_API_TIMBRAR;
+            $data = array('post-json' => $json);
+
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data),
+                ),
+            );
+
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);            
+            $response = json_decode($result);
+            
+        } catch (Exception $exc) {
+            $response = $exc->getTraceAsString();
+        }
+        
+        return $response;                
+        
     }
     
 

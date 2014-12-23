@@ -3,13 +3,13 @@
 return array(
 
    // client
-  'organization' => 'Empresa',
-    'name' => 'Nombre', //Razon social-Colombia,
+      'organization' => 'Empresa',
+   'name' => 'Nombre', //Razon social-Colombia,
    'website' => 'Sitio Web',
    'work_phone' => 'Teléfono',
    'address' => 'Dirección',
    'address1' => 'Calle',
-   'address2' => 'Bloq/Pta',
+   'address2' => 'Num. Int./Ext.',
    'city' => 'Ciudad',
    'state' => 'Región/Provincia', //Departamento-Colombia, Comarca-Panama
    'postal_code' => 'Código Postal',
@@ -41,7 +41,7 @@ return array(
    'tax' => 'Impuesto', //IVA for almost all latinamerica, ISV-Honduras, ITBMS-Panama, IV-Costa Rica, ITBIS- Republica Dominicana, IVU-Puerto Rico
    'item' => 'Concepto',
    'description' => 'Descripción',
-   'unit_cost' => 'Coste unitario',
+   'unit_cost' => 'Costo unitario',
    'quantity' => 'Cantidad',
    'line_total' => 'Total',
    'subtotal' => 'Subtotal',
@@ -55,8 +55,8 @@ return array(
    'create_new_client' => 'Crear nuevo cliente',
    'edit_client_details' => 'Editar detalles del cliente',
    'enable' => 'Activar',
-   'learn_more' => 'Aprender más',
-   'manage_rates' => 'Gestionar tarifas',
+   'learn_more' => 'Más detalles',
+   'manage_rates' => 'Manejar tarifas',
    'note_to_client' => 'Nota para el cliente',
    'invoice_terms' => 'Términos de facturación',
    'save_as_default_terms' => 'Guardar como términos por defecto',
@@ -440,32 +440,34 @@ return array(
    'vat_number' => 'Vat Number',
 
    'id_number' => 'ID Number',
-   'white_label_link' => 'White label',
-   'white_label_text' => 'Purchase a white label license for $10.00 to remove the Invoice Ninja branding from the top of the client pages.',
-   'white_label_header' => 'White Label',
-   'bought_white_label' => 'Successfully enabled white label license',
-   'white_labeled' => 'White labeled',
+   'white_label_link' => '-',
+   'white_label_text' => '-',
+   'white_label_header' => '-',
+   'bought_white_label' => '-',
+   'white_labeled' => '-',
 
   'restore' => 'Restore',
-  'restore_invoice' => 'Restore Invoice',
-  'restore_quote' => 'Restore Quote',
-  'restore_client' => 'Restore Client',
-  'restore_credit' => 'Restore Credit',
-  'restore_payment' => 'Restore Payment',
+  'restore_invoice' => 'Restaurar Factura',
+  'restore_quote' => 'Restaurar Cotizacion',
+  'restore_client' => 'Restaurar Cliente',
+  'restore_credit' => 'Restaurar Credito',
+  'restore_payment' => 'Restaurar Pago',
 
-  'restored_invoice' => 'Successfully restored invoice',
-  'restored_quote' => 'Successfully restored quote',
-  'restored_client' => 'Successfully restored client',
-  'restored_payment' => 'Successfully restored payment',
-  'restored_credit' => 'Successfully restored credit',
+  'restored_invoice' => 'Factura restaurada con éxito',
+  'restored_quote' => 'Cotizacion restaurada con éxito',
+  'restored_client' => 'Cliente restaurado con éxito',
+  'restored_payment' => 'Pago restaurado con éxito',
+  'restored_credit' => 'Credito restaurado con éxito',
   
-  'reason_for_canceling' => 'Help us improve our site by telling us why you\'re leaving.',
-  'discount_percent' => 'Percent',
-  'discount_amount' => 'Amount',
+  'reason_for_canceling' => 'Ayudenos a mejorar nuestra applicacion y diganos por qué decidio dejarnos, :(',
+  'discount_percent' => 'Porcentaje',
+  'discount_amount' => 'Monto',
     
+    //CFDI
     'cfdi'  => 'CFDI',
     'askfor'  => 'Solicitar',
     'cfdifilescreated'  => 'Los Archivos digitales fueron creados exitosamente',
-
-
+    'cfdifileserror'  => 'No se pudo generar los CFDI',
+    'generarCfdi'  => 'Enviar CFDI',
+    'cancelarCfdi'  => 'Cancelar CFDI',
 );

@@ -145,7 +145,6 @@ Route::group(array('before' => 'auth'), function()
     //Route::resource('timesheets', 'TimesheetController');
      Route::get('invoices/{id}/cfdi', array('as'=>'cfdi', 'uses'=>'CfdiController@getCfdi'));
      Route::post('invoices/{id}/cfdi/post', array('as'=>'cfdiPost', 'uses'=>'CfdiController@postCfdi'));
-     //Route::get('invoices/{id}/cfdi/post', array('as'=>'cfdiPost', 'uses'=>'CfdiController@postCfdi'));
 });
 
 // Route group for API
@@ -281,7 +280,7 @@ define('NEW_VERSION_AVAILABLE', 'NEW_VERSION_AVAILABLE');
 
 
 // APISAT
-define('INVOICE_API_TIMBRAR','http://invoice.cloudandweb.com/api/1.0/timbrar');
+define('INVOICE_API_TIMBRAR','http://prod.apisat.mx/api/1.0/timbrar');
 define('INVOICE_API_CANCELAR','http://invoice.cloudandweb.com/api/1.0/cancelar');
 define('INVOICE_API_APISECRET','key_f4935b415b61cfa9f7d8622cd8679cd8');
 define('INVOICE_API_APIPUBLIC','key_2bbbc1cf67febfe3cec7a997ec598816');

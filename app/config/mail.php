@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	//'host' => '',
+	'host' => 'email-smtp.us-east-1.amazonaws.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'contact@invoiceninja.com', 'name' => 'Invoice Ninja'),
+	'from' => array('address' => ' ventas@apisat.mx', 'name' => 'Invoice Ninja'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => '',
+	'username' => 'AKIAI2FAAHMAQXZLCQPA',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => '',
+	'password' => 'AjBudnZC5xZ+hrwgyKkSGGQCbrwHFP/rM6ksKPPwY7J6',
 
 	/*
 	|--------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 class ConstantsSeeder extends Seeder
 {
@@ -61,51 +61,51 @@ class ConstantsSeeder extends Seeder
 		Theme::create(array('name' => 'united'));
 		Theme::create(array('name' => 'yeti'));
 
-		InvoiceStatus::create(array('name' => 'Draft'));
-		InvoiceStatus::create(array('name' => 'Sent'));
-		InvoiceStatus::create(array('name' => 'Viewed'));
-		InvoiceStatus::create(array('name' => 'Partial'));
-		InvoiceStatus::create(array('name' => 'Paid'));		
+		InvoiceStatus::create(array('name' => 'Borrador'));
+		InvoiceStatus::create(array('name' => 'Enviado'));
+		InvoiceStatus::create(array('name' => 'Visto'));
+		InvoiceStatus::create(array('name' => 'Parcial'));
+		InvoiceStatus::create(array('name' => 'Pagado'));
 
-		Frequency::create(array('name' => 'Weekly'));
-		Frequency::create(array('name' => 'Two weeks'));
-		Frequency::create(array('name' => 'Four weeks'));
-		Frequency::create(array('name' => 'Monthly'));
-		Frequency::create(array('name' => 'Three months'));
-		Frequency::create(array('name' => 'Six months'));
-		Frequency::create(array('name' => 'Annually'));
+		Frequency::create(array('name' => 'Semanal'));
+		Frequency::create(array('name' => 'Quincenal'));
+		Frequency::create(array('name' => 'Cuatrisemanal '));
+		Frequency::create(array('name' => 'Mensual'));
+		Frequency::create(array('name' => 'Trimestral'));
+		Frequency::create(array('name' => 'Semestral'));
+		Frequency::create(array('name' => 'Anual'));
 
-		Industry::create(array('name' => 'Accounting & Legal'));
-		Industry::create(array('name' => 'Advertising'));
-		Industry::create(array('name' => 'Aerospace'));
-		Industry::create(array('name' => 'Agriculture'));
-		Industry::create(array('name' => 'Automotive'));
-		Industry::create(array('name' => 'Banking & Finance'));
-		Industry::create(array('name' => 'Biotechnology'));
-		Industry::create(array('name' => 'Broadcasting'));
-		Industry::create(array('name' => 'Business Services'));
-		Industry::create(array('name' => 'Commodities & Chemicals'));
-		Industry::create(array('name' => 'Communications'));
-		Industry::create(array('name' => 'Computers & Hightech'));
-		Industry::create(array('name' => 'Defense'));
-		Industry::create(array('name' => 'Energy'));
-		Industry::create(array('name' => 'Entertainment'));
-		Industry::create(array('name' => 'Government'));
-		Industry::create(array('name' => 'Healthcare & Life Sciences'));
-		Industry::create(array('name' => 'Insurance'));
-		Industry::create(array('name' => 'Manufacturing'));
-		Industry::create(array('name' => 'Marketing'));
-		Industry::create(array('name' => 'Media'));
-		Industry::create(array('name' => 'Nonprofit & Higher Ed'));
-		Industry::create(array('name' => 'Pharmaceuticals'));
-		Industry::create(array('name' => 'Professional Services & Consulting'));
-		Industry::create(array('name' => 'Real Estate'));
-		Industry::create(array('name' => 'Retail & Wholesale'));
-		Industry::create(array('name' => 'Sports'));
-		Industry::create(array('name' => 'Transportation'));
-		Industry::create(array('name' => 'Travel & Luxury'));
-		Industry::create(array('name' => 'Other'));
-		Industry::create(array('name' => 'Photography'));
+        Industry::create(array('name' => 'Contabilidad y legal'));
+        Industry::create(array('name' => 'Publicidad'));
+        Industry::create(array('name' => 'Aeroespacial'));
+        Industry::create(array('name' => 'Agricultura'));
+        Industry::create(array('name' => 'Automotriz'));
+        Industry::create(array('name' => 'Banca y Finanzas'));
+        Industry::create(array('name' => 'Biotecnología'));
+        Industry::create(array('name' => 'Radiodifusión'));
+        Industry::create(array('name' => 'Servicios comerciales'));
+        Industry::create(array('name' => 'Materias Primas y Productos Químicos'));
+        Industry::create(array('name' => 'Comunicaciones'));
+        Industry::create(array('name' => 'Computadoras y Alta Tecnologia'));
+        Industry::create(array('name' => 'Energía'));
+        Industry::create(array('name' => 'Entretenimiento'));
+        Industry::create(array('name' => 'Gobierno'));
+        Industry::create(array('name' => 'Salud y Ciencias de la Vida'));
+        Industry::create(array('name' => 'Aseguradoras'));
+        Industry::create(array('name' => 'Manofactura'));
+        Industry::create(array('name' => 'Mercadotenica'));
+        Industry::create(array('name' => 'Medios de Comunicación'));
+        Industry::create(array('name' => 'Sin fines de Lucro'));
+        Industry::create(array('name' => 'Farmacéuticos'));
+        Industry::create(array('name' => 'Servicios Profesionales y Consultoría'));
+        Industry::create(array('name' => 'Bienes Raíces'));
+        Industry::create(array('name' => 'Venta al por menor y al por mayor'));
+        Industry::create(array('name' => 'Deportes'));
+        Industry::create(array('name' => 'Transporte'));
+        Industry::create(array('name' => 'Viajes y Lujo'));
+        Industry::create(array('name' => 'Fotografía y Video'));
+        Industry::create(array('name' => 'otro'));
+
 
 		Size::create(array('name' => '1 - 3'));
 		Size::create(array('name' => '4 - 10'));
@@ -114,28 +114,17 @@ class ConstantsSeeder extends Seeder
 		Size::create(array('name' => '101 - 500'));
 		Size::create(array('name' => '500+'));		
 
-		PaymentTerm::create(array('num_days' => 7, 'name' => 'Net 7'));
-		PaymentTerm::create(array('num_days' => 10, 'name' => 'Net 10'));
-		PaymentTerm::create(array('num_days' => 14, 'name' => 'Net 14'));
-		PaymentTerm::create(array('num_days' => 15, 'name' => 'Net 15'));
-		PaymentTerm::create(array('num_days' => 30, 'name' => 'Net 30'));
-		PaymentTerm::create(array('num_days' => 60, 'name' => 'Net 60'));
-		PaymentTerm::create(array('num_days' => 90, 'name' => 'Net 90'));
+		PaymentTerm::create(array('num_days' => 7, 'name' => 'Pago en 7 dias'));
+		PaymentTerm::create(array('num_days' => 10, 'name' => 'Pago en 10 dias'));
+		PaymentTerm::create(array('num_days' => 14, 'name' => 'Pago en 14 dias'));
+		PaymentTerm::create(array('num_days' => 15, 'name' => 'Pago en 15 dias'));
+		PaymentTerm::create(array('num_days' => 30, 'name' => 'Pago en 30 dias'));
+		PaymentTerm::create(array('num_days' => 60, 'name' => 'Pago en 60 dias'));
+		PaymentTerm::create(array('num_days' => 90, 'name' => 'Pago en 90 dias'));
 
-		Currency::create(array('name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Pound Sterling', 'code' => 'GBP', 'symbol' => '£', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
+		Currency::create(array('name' => 'Peso Mexicano', 'code' => 'MXN', 'symbol' => '$', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
+        Currency::create(array('name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
 		Currency::create(array('name' => 'Euro', 'code' => 'EUR', 'symbol' => '€', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Rand', 'code' => 'ZAR', 'symbol' => 'R', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Danish Krone', 'code' => 'DKK', 'symbol' => 'kr ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Israeli Shekel', 'code' => 'ILS', 'symbol' => 'NIS ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Singapore Dollar', 'code' => 'SGD', 'symbol' => 'SGD ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Swedish Krona', 'code' => 'SEK', 'symbol' => 'kr ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Norske Kroner', 'code' => 'NOK', 'symbol' => 'kr ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Kenyan Shilling', 'code' => 'KES', 'symbol' => 'KSh ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Canadian Dollar', 'code' => 'CAD', 'symbol' => 'C$', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Philippine Peso', 'code' => 'PHP', 'symbol' => 'P ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Indian Rupee', 'code' => 'INR', 'symbol' => 'Rs. ', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
-		Currency::create(array('name' => 'Australian Dollar', 'code' => 'AUD', 'symbol' => '$', 'precision' => '2', 'thousand_separator' => ',', 'decimal_separator' => '.'));
 
 		DatetimeFormat::create(array('format' => 'd/M/Y g:i a', 'label' => '10/Mar/2013'));
 		DatetimeFormat::create(array('format' => 'd-M-Yk g:i a', 'label' => '10-Mar-2013'));

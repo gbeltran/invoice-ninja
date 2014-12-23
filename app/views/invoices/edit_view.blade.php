@@ -53,7 +53,7 @@
 			<div data-bind="with: client">
 				<div style="display:none" class="form-group" data-bind="visible: contacts().length > 0 &amp;&amp; contacts()[0].email(), foreach: contacts">
 					<div class="col-lg-8 col-lg-offset-4">
-						<label class="checkbox" data-bind="attr: {for: $index() + '_check'}" onclick="refreshPDF()">
+						<label class="checkbox" data-bind="attr: {for: $index() + '_check'}">
 							<input type="checkbox" value="1" data-bind="checked: send_invoice, attr: {id: $index() + '_check'}">
 								<span data-bind="html: email.display"/>
 						</label>
@@ -63,18 +63,19 @@
 			
 		</div>
 		<div class="col-md-4" id="col_2">
+                    <div style="display:none;">
 			<div data-bind="visible: !is_recurring()">
 				{{ Former::text('invoice_date')->data_bind("datePicker: invoice_date, valueUpdate: 'afterkeydown'")->label(trans("texts.{$entityType}_date"))
 							->data_date_format(Session::get(SESSION_DATE_PICKER_FORMAT))->append('<i class="glyphicon glyphicon-calendar" onclick="toggleDatePicker(\'invoice_date\')"></i>') }}
-				{{ Former::text('due_date')->data_bind("datePicker: due_date, valueUpdate: 'afterkeydown'")
+				{{ Former::text('due_date')->data_bind("datePicker: due_date")
 							->data_date_format(Session::get(SESSION_DATE_PICKER_FORMAT))->append('<i class="glyphicon glyphicon-calendar" onclick="toggleDatePicker(\'due_date\')"></i>') }}							
 			</div>
 			@if ($entityType == ENTITY_INVOICE)
 				<div data-bind="visible: is_recurring" style="display: none">
 					{{ Former::select('frequency_id')->options($frequencies)->data_bind("value: frequency_id") }}
-					{{ Former::text('start_date')->data_bind("datePicker: start_date, valueUpdate: 'afterkeydown'")
+					{{ Former::text('start_date')->data_bind("datePicker: start_date")
 								->data_date_format(Session::get(SESSION_DATE_PICKER_FORMAT))->append('<i class="glyphicon glyphicon-calendar" onclick="toggleDatePicker(\'start_date\')"></i>') }}
-					{{ Former::text('end_date')->data_bind("datePicker: end_date, valueUpdate: 'afterkeydown'")
+					{{ Former::text('end_date')->data_bind("datePicker: end_date")
 								->data_date_format(Session::get(SESSION_DATE_PICKER_FORMAT))->append('<i class="glyphicon glyphicon-calendar" onclick="toggleDatePicker(\'end_date\')"></i>') }}
 				</div>
 				@if ($invoice && $invoice->recurring_invoice_id)
@@ -88,13 +89,15 @@
 				</div>			
 				@endif
 			@endif
+                    </div>
 			
 		</div>
 
 		<div class="col-md-4" id="col_2">
-			{{ Former::text('invoice_number')->label(trans("texts.{$entityType}_number_short"))->data_bind("value: invoice_number, valueUpdate: 'afterkeydown'") }}
-			{{ Former::text('po_number')->label(trans('texts.po_number_short'))->data_bind("value: po_number, valueUpdate: 'afterkeydown'") }}				
-			{{ Former::text('discount')->data_bind("value: discount, valueUpdate: 'afterkeydown'")
+			{{ Former::text('invoice_number')->label(trans("texts.{$entityType}_number_short"))->data_bind("value: invoice_number") }}
+			<div style="display:none;">
+                            {{ Former::text('po_number')->label(trans('texts.po_number_short'))->data_bind("value: po_number") }}				
+			{{ Former::text('discount')->data_bind("value: discount")
 					->addGroupClass('discount-group')->type('number')->min('0')->step('any')->append(
 						Former::select('is_amount_discount')->addOption(trans('texts.discount_percent'), '0')
 						->addOption(trans('texts.discount_amount'), '1')->data_bind("value: is_amount_discount")->raw()
@@ -107,7 +110,7 @@
 					<a href="#" data-bind="click: $root.showTaxesForm"><i class="glyphicon glyphicon-list-alt"></i> {{ trans('texts.manage_rates') }}</a>
 				</div>
 			</div>
-
+                        </div>
 		</div>
 	</div>
 
@@ -135,17 +138,16 @@
 					<i style="display:none" data-bind="visible: actionsVisible() &amp;&amp; $parent.invoice_items().length > 1" class="fa fa-sort"></i>
 				</td>
 				<td>	            	
-					{{ Former::text('product_key')->useDatalist($products, 'product_key')->onkeyup('onItemChange()')
-					->raw()->data_bind("value: product_key, valueUpdate: 'afterkeydown'")->addClass('datalist') }}
+                                        <input disabled data-bind="value: product_key" style="text-align: right" class="form-control"//>
 				</td>
 				<td>
-					<textarea data-bind="value: wrapped_notes, valueUpdate: 'afterkeydown'" rows="1" cols="60" style="resize: none;" class="form-control word-wrap"></textarea>
+					<textarea disabled data-bind="value: wrapped_notes" rows="1" cols="60" style="resize: none;" class="form-control word-wrap"></textarea>
 				</td>
 				<td>
-					<input onkeyup="onItemChange()" data-bind="value: prettyCost, valueUpdate: 'afterkeydown'" style="text-align: right" class="form-control"//>
+					<input disabled data-bind="value: prettyCost" style="text-align: right" class="form-control"//>
 				</td>
 				<td style="{{ $account->hide_quantity ? 'display:none' : '' }}">
-					<input onkeyup="onItemChange()" data-bind="value: prettyQty, valueUpdate: 'afterkeydown'" style="text-align: right" class="form-control"//>
+					<input disabled data-bind="value: prettyQty" style="text-align: right" class="form-control"//>
 				</td>
 				<td style="display:none;" data-bind="visible: $root.invoice_item_taxes.show">
 					<select class="form-control" style="width:100%" data-bind="value: tax, options: $root.tax_rates, optionsText: 'displayName'"></select>
@@ -164,15 +166,15 @@
 			<tr>
 				<td class="hide-border"/>
 				<td colspan="2" rowspan="6" style="vertical-align:top">
-					<br/>
-					{{ Former::textarea('public_notes')->data_bind("value: wrapped_notes, valueUpdate: 'afterkeydown'")
+					<br/><div style="display:none;">
+					{{ Former::textarea('public_notes')->data_bind("value: wrapped_notes")
 					->label(false)->placeholder(trans('texts.note_to_client'))->style('resize: none') }}			
-					{{ Former::textarea('terms')->data_bind("value: wrapped_terms, valueUpdate: 'afterkeydown'")
+					{{ Former::textarea('terms')->data_bind("value: wrapped_terms")
 					->label(false)->placeholder(trans('texts.invoice_terms'))->style('resize: none')
 					->addGroupClass('less-space-bottom') }}
 					<label class="checkbox" style="width: 200px">
 						<input type="checkbox" style="width: 24px" data-bind="checked: set_default_terms"/>{{ trans('texts.save_as_default_terms') }}
-					</label>
+                                        </label></div>
 				</td>
 				<td style="display:none" data-bind="visible: $root.invoice_item_taxes.show"/>	        	
 				<td colspan="{{ $account->hide_quantity ? 1 : 2 }}">{{ trans('texts.subtotal') }}</td>
@@ -191,7 +193,7 @@
 					<td class="hide-border" colspan="3"/>
 					<td style="display:none" class="hide-border" data-bind="visible: $root.invoice_item_taxes.show"/>
 					<td colspan="{{ $account->hide_quantity ? 1 : 2 }}">{{ $account->custom_invoice_label1 }}</td>
-					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value1, valueUpdate: 'afterkeydown'"/></td>
+					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value1"/></td>
 				</tr>
 			@endif
 
@@ -200,7 +202,7 @@
 					<td class="hide-border" colspan="3"/>
 					<td style="display:none" class="hide-border" data-bind="visible: $root.invoice_item_taxes.show"/>
 					<td colspan="{{ $account->hide_quantity ? 1 : 2 }}">{{ $account->custom_invoice_label2 }}</td>
-					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value2, valueUpdate: 'afterkeydown'"/></td>
+					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value2"/></td>
 				</tr>
 			@endif
 
@@ -219,7 +221,7 @@
 					<td class="hide-border" colspan="3"/>
 					<td style="display:none" class="hide-border" data-bind="visible: $root.invoice_item_taxes.show"/>
 					<td colspan="{{ $account->hide_quantity ? 1 : 2 }}">{{ $account->custom_invoice_label1 }}</td>
-					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value1, valueUpdate: 'afterkeydown'"/></td>
+					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value1"/></td>
 				</tr>
 			@endif
 
@@ -228,7 +230,7 @@
 					<td class="hide-border" colspan="3"/>
 					<td style="display:none" class="hide-border" data-bind="visible: $root.invoice_item_taxes.show"/>
 					<td colspan="{{ $account->hide_quantity ? 1 : 2 }}">{{ $account->custom_invoice_label2 }}</td>
-					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value2, valueUpdate: 'afterkeydown'"/></td>
+					<td style="text-align: right;padding-right: 28px" colspan="2"><input class="form-control" data-bind="value: custom_value2"/></td>
 				</tr>
 			@endif
 
@@ -327,7 +329,7 @@
 			{{ Button::success(trans('texts.restore'), ['onclick' => 'submitAction("restore")'])->append_with_icon('cloud-download') }}
 		@endif
                 
-                {{ Button::success(trans("texts.generarCfdi"), array('id' => 'saveButton', 'onclick' => 'onSaveCfdi()')) }}
+                {{ Button::success(trans("texts.cancelarCfdi"), array('id' => 'cancelCfdiButton', 'onclick' => 'onCancelCfdi()')) }}
 
 	</div>
 	<p>&nbsp;</p>
@@ -353,30 +355,30 @@
 			<div class="col-md-6" style="margin-left:0px;margin-right:0px" >
 
 				{{ Former::legend('organization') }}
-				{{ Former::text('name')->data_bind("value: name, valueUpdate: 'afterkeydown', attr { placeholder: name.placeholder }") }}
-                                {{ Former::text('id_number')->data_bind("value: id_number, valueUpdate: 'afterkeydown'") }}
-                                {{ Former::text('vat_number')->data_bind("value: vat_number, valueUpdate: 'afterkeydown'") }}
+				{{ Former::text('name')->data_bind("value: name, attr { placeholder: name.placeholder }") }}
+                                {{ Former::text('id_number')->data_bind("value: id_number") }}
+                                {{ Former::text('vat_number')->data_bind("value: vat_number") }}
                 
 				{{ Former::text('website')->data_bind("value: website, valueUpdate: 'afterkeydown'") }}
-				{{ Former::text('work_phone')->data_bind("value: work_phone, valueUpdate: 'afterkeydown'") }}
+				{{ Former::text('work_phone')->data_bind("value: work_phone") }}
 
 				@if (Auth::user()->isPro())				
 					@if ($account->custom_client_label1)
 						{{ Former::text('custom_value1')->label($account->custom_client_label1)
-							->data_bind("value: custom_value1, valueUpdate: 'afterkeydown'") }}
+							->data_bind("value: custom_value1") }}
 					@endif
 					@if ($account->custom_client_label2)
 						{{ Former::text('custom_value2')->label($account->custom_client_label2)
-							->data_bind("value: custom_value2, valueUpdate: 'afterkeydown'") }}
+							->data_bind("value: custom_value2") }}
 					@endif
 				@endif				
 				
 				{{ Former::legend('address') }}
-				{{ Former::text('address1')->data_bind("value: address1, valueUpdate: 'afterkeydown'") }}
-				{{ Former::text('address2')->data_bind("value: address2, valueUpdate: 'afterkeydown'") }}
-				{{ Former::text('city')->data_bind("value: city, valueUpdate: 'afterkeydown'") }}
-				{{ Former::text('state')->data_bind("value: state, valueUpdate: 'afterkeydown'") }}
-				{{ Former::text('postal_code')->data_bind("value: postal_code, valueUpdate: 'afterkeydown'") }}
+				{{ Former::text('address1')->data_bind("value: address1") }}
+				{{ Former::text('address2')->data_bind("value: address2") }}
+				{{ Former::text('city')->data_bind("value: city") }}
+				{{ Former::text('state')->data_bind("value: state") }}
+				{{ Former::text('postal_code')->data_bind("value: postal_code") }}
 				{{ Former::select('country_id')->addOption('','')->addGroupClass('country_select')
 					->fromQuery($countries, 'name', 'id')->data_bind("dropdown: country_id") }}
 					
@@ -454,10 +456,10 @@
 			    	<tr data-bind="event: { mouseover: showActions, mouseout: hideActions }">
 			    		<td style="width:30px" class="hide-border"></td>
 			            <td style="width:60px">
-			            	<input onkeyup="onTaxRateChange()" data-bind="value: name, valueUpdate: 'afterkeydown'" class="form-control" onchange="refreshPDF()"//>			            	
+			            	<input onkeyup="onTaxRateChange()" data-bind="value: name, valueUpdate: 'afterkeydown'" class="form-control"//>			            	
 			            </td>
 			            <td style="width:60px">
-			            	<input onkeyup="onTaxRateChange()" data-bind="value: prettyRate, valueUpdate: 'afterkeydown'" style="text-align: right" class="form-control" onchange="refreshPDF()"//>
+			            	<input onkeyup="onTaxRateChange()" data-bind="value: prettyRate, valueUpdate: 'afterkeydown'" style="text-align: right" class="form-control"//>
 			            </td>
 			        	<td style="width:30px; cursor:pointer" class="hide-border td-icon">
 			        		&nbsp;<i style="width:12px;" data-bind="click: $root.removeTaxRate, visible: actionsVisible() &amp;&amp; !isEmpty()" class="fa fa-minus-circle redlink" title="Remove item"/>
@@ -571,7 +573,7 @@
 
 		$('#terms, #public_notes, #invoice_number, #invoice_date, #due_date, #po_number, #discount, #currency_id, #invoice_design_id, #recurring, #is_amount_discount').change(function() {
 			setTimeout(function() {
-				refreshPDF();
+//				refreshPDF();
 			}, 1);
 		});
 
@@ -711,6 +713,14 @@
             $form = $('form.invoices-form');
             $('input[name="_formType"]').remove();
             $form.append($("<input type=\"hidden\" class=\"form-control\" name=\"_formType\"/>").val("cfdi"));
+            onSaveClick();
+        }
+        
+        function onCancelCfdi(){
+            var $form;
+            $form = $('form.invoices-form');
+            $('input[name="_formType"]').remove();
+            $form.append($("<input type=\"hidden\" class=\"form-control\" name=\"_formType\"/>").val("cancel_cfdi"));
             onSaveClick();
         }
         
@@ -1083,9 +1093,9 @@
 		if (data) {
 			ko.mapping.fromJS(data, self.mapping, self);			
 			self.is_recurring(parseInt(data.is_recurring));
-		} else {
-			self.addItem();
-		}
+		} //else {
+//			self.addItem();
+//		}
 
 		self._tax = ko.observable();
 		this.tax = ko.computed({
@@ -1523,21 +1533,21 @@
 
 	function onItemChange()
 	{
-		var hasEmpty = false;
-		for(var i=0; i<model.invoice().invoice_items().length; i++) {
-			var item = model.invoice().invoice_items()[i];
-			if (item.isEmpty()) {
-				hasEmpty = true;
-			}
-		}
-
-		if (!hasEmpty) {
-			model.invoice().addItem();
-		}
-
-		$('.word-wrap').each(function(index, input) {
-			$(input).height($(input).val().split('\n').length * 20);
-		});
+//		var hasEmpty = false;
+//		for(var i=0; i<model.invoice().invoice_items().length; i++) {
+//			var item = model.invoice().invoice_items()[i];
+//			if (item.isEmpty()) {
+//				hasEmpty = true;
+//			}
+//		}
+//
+//		if (!hasEmpty) {
+////			model.invoice().addItem();
+//		}
+//
+//		$('.word-wrap').each(function(index, input) {
+//			$(input).height($(input).val().split('\n').length * 20);
+//		});
 	}
 
 	function onTaxRateChange()
@@ -1597,7 +1607,7 @@
 					contact.send_invoice = invitationContactIds.indexOf(contact.public_id) >= 0;
 				}			
 			}
-			model.invoice().addItem();
+//			model.invoice().addItem();
 			//model.addTaxRate();			
 		@else
             // TODO: Add the first tax rate for new invoices by adding a new db field to the tax codes types to set the default
