@@ -584,6 +584,8 @@ class InvoiceController extends \BaseController {
                     Cfdi::saveCFDI($upd);
 
                     try {
+                        $invoice->invoice_status_id = INVOICE_STATUS_SENT;
+                        $invoice->save();
                         $file = file_get_contents("http://".substr($files->pdf,2));
                         file_put_contents(public_path().'/cfdi.pdf', $file);
                         $file = file_get_contents("http://".substr($files->xml,2));
