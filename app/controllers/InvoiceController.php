@@ -368,17 +368,17 @@ class InvoiceController extends \BaseController {
                 $action = Input::get('action');
                 $entityType = Input::get('entityType');
 
-//                if ($publicId):
-//                    $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
-//                    $all = Input::all();
-//                    if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
-//                        $this->CFDI($publicId, $all['_formType']);   
-//                        
-//                    if(sizeof($_cfdi)>0){
-//                        $url = "{$entityType}s/" . $publicId . '/edit';
-//                        return Redirect::to($url);
-//                    }
-//                endif;		
+                if ($publicId):
+                    $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
+                    $all = Input::all();
+                    if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
+                        $this->CFDI($publicId, $all['_formType']);   
+                        
+                    if(sizeof($_cfdi)>0){
+                        $url = "{$entityType}s/" . $publicId . '/edit';
+                        return Redirect::to($url);
+                    }
+                endif;		
 
 		if (in_array($action, ['archive', 'delete', 'mark', 'restore']))
 		{
@@ -489,6 +489,7 @@ class InvoiceController extends \BaseController {
                         
 			$url = "{$entityType}s/" . $invoice->public_id . '/edit';
 			return Redirect::to($url);
+                        return;
 		}
 	}
 
