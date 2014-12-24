@@ -10,12 +10,12 @@ class Cfdi extends Eloquent
         return "<a href='{$url}'>Get</a>";
     }
     
-    public static function setJson($publicId, $invoice){
+    public static function setJson($publicId, $invoice, $api){
         $json = array(
             'bill'  => array(
                 'items'         => Cfdi::setItems($publicId),
                 'receptor'      => Cfdi::setReceptor($invoice),
-                'transmitter'   => Cfdi::setTransmitter(),
+                'transmitter'   => Cfdi::setTransmitter($api),
                 'options'       => Cfdi::setOptions(),
                 'totals'        => Cfdi::setTotals($invoice)
         ));
@@ -43,10 +43,10 @@ class Cfdi extends Eloquent
         return $items;            
     }
 
-    public static  function setTransmitter(){
+    public static  function setTransmitter($api){        
         $transmitter = array(
-            'private_key'   => INVOICE_API_APISECRET,
-            'public_key'   => INVOICE_API_APIPUBLIC
+            'private_key'   => $api->apisecret,
+            'public_key'   => $api->apipublic
         );
 
         return $transmitter;
@@ -133,67 +133,109 @@ class Cfdi extends Eloquent
         }
     }
     
-    public static function cancelCfdi($publicId)
+    public static function cfdiTable($id){
+        $data = Cfdi::where('invoice_id','=', $id)->first();
+        if(sizeof($data)>0){
+            if($data->flag == 1){
+                return 'Cancelada';
+                
+            }else{
+                $link = "<a href='{$data->pdf}' target='_blank'>PDF </a> | <a href='{$data->xml}' target='_blank'>XML </a> | <a href='#' onclick='cancelCfdi($id)'>Cancelar </a>";
+            }
+            return $link;
+        }
+        return '-';
+    }
+    
+    public static function cancelCfdi($publicId, $api)
     {
-         
         $cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
-         
-        $url = INVOICE_API_CANCELAR;
+        
+        $url = $api->cancelurl;
         $json =  array(
-            'public_key'    =>  INVOICE_API_APIPUBLIC, 
-            'private_key'   =>  INVOICE_API_APISECRET,
+            'public_key'    =>  $api->apipublic, 
+            'private_key'   =>  $api->apisecret,
             'uid'           =>  $cfdi->cancel,
         );   
         
         $data = array('json' => json_encode($json));
             
-            $options = array(
-                'http' => array(
-                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                    'method'  => 'POST',
-                    'content' => http_build_query($data),
-                ),
-            );
-            
-            $context  = stream_context_create($options);
-            $result = file_get_contents($url, false, $context);  
-            $response = json_decode($result);
-            
-            
-            if ($response->code == 0){
-                $cfdi->flag = 1;
-                 $cfdi->save();             
-            }        
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data),
+            ),
+        );
+
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);  
+        $response = json_decode($result);
+
+        if ($response->code == 0){
+            $cfdi->flag = 1;
+             $cfdi->save();             
+        }   
          
-         return $data;
+        return $response;
      }
     
-    
+    public static function emailCfdi($files, $invoice)
+    {
+        $invoice->invoice_status_id = INVOICE_STATUS_SENT;
+        $invoice->save();
+        $file = file_get_contents("http://".substr($files->pdf,2));
+        file_put_contents(public_path().'/cfdi.pdf', $file);
+        $file = file_get_contents("http://".substr($files->xml,2));
+        file_put_contents(public_path().'/cfdi.xml', $file);
+
+        $contact = $invoice->client->contacts;
+        $array = array(
+            'email' => $contact[0]->email,
+            'clientName' => $contact[0]->first_name . ' '. $contact[0]->last_name,
+            'invoiceAmount' => $invoice->amount,
+            'entityType' => 'invoice',
+            'pdf' => $files->pdf,
+            'xml' => $files->xml,
+            'p_pfd' => public_path().'/cfdi.pdf',
+            'p_xml' => public_path().'/cfdi.xml',
+        );
+
+        Mail::send('emails.cfdi_html', $array, function($message) use ($array)
+        {
+            $message->to($array['email'])->subject('Archivos CFDI');
+            $message->attach($array['p_pfd']);
+            $message->attach($array['p_xml']);
+        });
+
+        unlink(public_path().'/cfdi.pdf');
+        unlink(public_path().'/cfdi.xml');
+    }
     public static function sendCfdi($publicId, $invoice)
     {            
-//        $data = Cfdi::setJson($publicId, $invoice);
-//        echo "<pre>";print_R($data);
-        
-        try {
-            $json =  json_encode(Cfdi::setJson($publicId, $invoice));
+        $api = CfdiSettings::first();
+        if (sizeof($api)>0){            
+            try {
+                $json =  json_encode(Cfdi::setJson($publicId, $invoice, $api));
 
-            $url = INVOICE_API_TIMBRAR;
-            $data = array('post-json' => $json);
+                $url = $api->posturl;
+                $data = array('post-json' => $json);
 
-            $options = array(
-                'http' => array(
-                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                    'method'  => 'POST',
-                    'content' => http_build_query($data),
-                ),
-            );
+                $options = array(
+                    'http' => array(
+                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                        'method'  => 'POST',
+                        'content' => http_build_query($data),
+                    ),
+                );
 
-            $context  = stream_context_create($options);
-            $result = file_get_contents($url, false, $context);            
-            $response = json_decode($result);
-            
-        } catch (Exception $exc) {
-            $response = $exc->getTraceAsString();
+                $context  = stream_context_create($options);
+                $result = file_get_contents($url, false, $context);            
+                $response = json_decode($result);
+
+            } catch (Exception $exc) {
+                $response = $exc->getTraceAsString();
+            }
         }
         
         return $response;                

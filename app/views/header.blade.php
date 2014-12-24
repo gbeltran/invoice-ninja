@@ -4,7 +4,7 @@
 @section('head')
 
   <link href="{{ asset('built.css') }}?no_cache={{ NINJA_VERSION }}" rel="stylesheet" type="text/css"/>    
-
+  {{HTML::style('css/sweet-alert.css', ['rel'=>'stylesheet'])}}
   <style type="text/css">
 
     body {
@@ -376,8 +376,9 @@ Want something changed? We're {{ link_to('https://github.com/hillelcoren/invoice
 @endif
 
 <p>&nbsp;</p>
-
+{{HTML::script('js/sweet-alert.js')}}
 </body>
+
 
 
 <script type="text/javascript">

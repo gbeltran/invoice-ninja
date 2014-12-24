@@ -83,13 +83,42 @@
 		var checked = $('#trashed').is(':checked');
 		window.location = '{{ URL::to('view_archive/' . $entityType) }}' + (checked ? '/true' : '/false');
 	}
+        
+        function cancelCfdi(id){
+         swal({
+                title: "Esta seguro que desea cancelar los archivos?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false,
+                closeOnCancel: false
+              },
+
+              function(isConfirm){
+                if (isConfirm) {
+                  swal("Exito!", "Los archivos se eliminaran", "success");
+                  window.location.href = "/invoices/" + id + '/cancel';
+
+                } else {
+                  swal("Cancelado", "Archivos Seguros", "success");
+                }
+              })
+        }
 
     </script>
+    
+    
+    
+    
 
 @stop
 
 @section('onReady')
-
+              
+        
 	var tableFilter = '';
 	var searchTimeout = false;
 
@@ -115,6 +144,7 @@
 			filterTable($('#tableFilter').val());
 		}, 1000);					
 	})
+        
 
 	window.onDatatableReady = function() {		
 		$(':checkbox').click(function() {
@@ -154,7 +184,4 @@
 		var checked = $('tbody :checkbox:checked').length > 0;
 		$('#archive > button').prop('disabled', !checked);	
 	}
-
-
-	
 @stop

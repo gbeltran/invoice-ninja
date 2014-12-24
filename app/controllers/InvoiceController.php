@@ -27,7 +27,7 @@ class InvoiceController extends \BaseController {
 		$data = [
 			'title' => trans('texts.invoices'),
 			'entityType'=>ENTITY_INVOICE, 
-			'columns'=>Utils::trans(['checkbox', 'invoice_number', 'client', 'invoice_date', 'invoice_total', 'balance_due', 'due_date', 'status', 'action'])
+			'columns'=>Utils::trans(['checkbox', 'invoice_number', 'client', 'invoice_date', 'invoice_total', 'balance_due', 'due_date', 'status', 'cfdi','action'])
 		];
 
 		$recurringInvoices = Invoice::scope()->where('is_recurring', '=', true);
@@ -368,17 +368,17 @@ class InvoiceController extends \BaseController {
                 $action = Input::get('action');
                 $entityType = Input::get('entityType');
 
-                if ($publicId):
-                    $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
-                    $all = Input::all();
-                    if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
-                        $this->CFDI($publicId, $all['_formType']);   
-                        
-                    if(sizeof($_cfdi)>0){
-                        $url = "{$entityType}s/" . $publicId . '/edit';
-                        return Redirect::to($url);
-                    }
-                endif;		
+//                if ($publicId):
+//                    $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
+//                    $all = Input::all();
+//                    if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
+//                        $this->CFDI($publicId, $all['_formType']);   
+//                        
+//                    if(sizeof($_cfdi)>0){
+//                        $url = "{$entityType}s/" . $publicId . '/edit';
+//                        return Redirect::to($url);
+//                    }
+//                endif;		
 
 		if (in_array($action, ['archive', 'delete', 'mark', 'restore']))
 		{
@@ -569,62 +569,57 @@ class InvoiceController extends \BaseController {
 		return self::edit($publicId, true);
 	}
         
-        public function CFDI($publicId, $type){
-            if ($type=='cfdi'):
+        public function cancelCfdi($publicId){
+            $api = CfdiSettings::first();
+            if (sizeof($api)>0){ 
+                $response = Cfdi::cancelCfdi($publicId, $api);
+                if ($response->code == 0)
+                    Session::flash('message', 'CFDI Cancelado');
+                else
+                    Session::flash('error', $response->message);                
+            }
+            else{
+                 Session::flash('error', trans('texts.apisettingserror'));                  
+            }
+            
+            return Redirect::to('invoices');
+             
+        }
+        
+        public function CFDI($publicId, $type)
+        {
+            if ($type=='cfdi'){
                 $invoice = Invoice::scope($publicId)
                 ->withTrashed()
                 ->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
                 ->firstOrFail();
 
-                $response = Cfdi::sendCfdi($publicId, $invoice);
+                $api = CfdiSettings::first();
+                if (sizeof($api)>0){            
+                    $response = Cfdi::sendCfdi($publicId, $invoice);
 
-                if ($response->code == 0){
-                    $files = $response->files;
-                    $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->another, 'sale_id'=> $publicId);
-                    Cfdi::saveCFDI($upd);
+                    if ($response->code == 0){
+                        $files = $response->files;
+                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->another, 'sale_id'=> $publicId);
+                        Cfdi::saveCFDI($upd);
 
-                    try {
-                        $invoice->invoice_status_id = INVOICE_STATUS_SENT;
-                        $invoice->save();
-                        $file = file_get_contents("http://".substr($files->pdf,2));
-                        file_put_contents(public_path().'/cfdi.pdf', $file);
-                        $file = file_get_contents("http://".substr($files->xml,2));
-                        file_put_contents(public_path().'/cfdi.xml', $file);
-                        
-                        $contact = $invoice->client->contacts;
-                        $array = array(
-                            'email' => $contact[0]->email,
-                            'clientName' => $contact[0]->first_name . ' '. $contact[0]->last_name,
-                            'invoiceAmount' => $invoice->amount,
-                            'entityType' => 'invoice',
-                            'pdf' => $files->pdf,
-                            'xml' => $files->xml,
-                            'p_pfd' => public_path().'/cfdi.pdf',
-                            'p_xml' => public_path().'/cfdi.xml',
-                        );
-
-                        Mail::send('emails.cfdi_html', $array, function($message) use ($array)
-                        {
-                            $message->to($array['email'])->subject('Archivos CFDI');
-                             $message->attach($array['p_pfd']);
-                             $message->attach($array['p_xml']);
-                        });
-                        
-                        unlink(public_path().'/cfdi.pdf');
-                        unlink(public_path().'/cfdi.xml');
-
-                    } catch (Exception $exc) {
-                        Session::flash('error', $exc->getTraceAsString());	
+                        try {
+                            Cfdi::emailCfdi($files, $invoice);
+                        } catch (Exception $exc) {
+                            Session::flash('error', $exc->getTraceAsString());	
+                        }
+                        Session::flash('message', trans('texts.cfdifilescreated'));
                     }
-                    Session::flash('message', trans('texts.cfdifilescreated'));
+                    else{
+                        Session::flash('error', trans('texts.cfdifileserror').'.<br> #<strong>'.$response->code. '</strong>: <i>'. $response->message. '</i>.');	
+                    }
                 }
                 else{
-                    Session::flash('error', trans('texts.cfdifileserror').'.<br> #<strong>'.$response->code. '</strong>: <i>'. $response->message. '</i>.');	
+                   Session::flash('error', trans('texts.apisettingserror'));                 
                 }
-            else:
-                Cfdi::cancelCfdi($publicId);
-                
-            endif;
-                
+            }
+            else{
+                Cfdi::cancelCfdi($publicId);                
+            }                
         }
 }

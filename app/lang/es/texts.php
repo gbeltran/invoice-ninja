@@ -470,4 +470,5 @@ return array(
     'cfdifileserror'  => 'No se pudo generar los CFDI',
     'generarCfdi'  => 'Enviar CFDI',
     'cancelarCfdi'  => 'Cancelar CFDI',
+    'apisettingserror'  => 'Revisar los ajustes de conexión al APISAT',
 );
