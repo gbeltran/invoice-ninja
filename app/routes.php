@@ -100,7 +100,7 @@ Route::group(array('before' => 'auth'), function()
 
   Route::post('company/cancel_account', 'AccountController@cancelAccount');
 	Route::get('account/getSearchData', array('as' => 'getSearchData', 'uses' => 'AccountController@getSearchData'));
-  Route::get('company/{section?}/{sub_section?}', 'INVOICE_STATUS_SENT@showSection');	
+  Route::get('company/{section?}/{sub_section?}', 'AccountController@showSection');	
 	Route::post('company/{section?}/{sub_section?}', 'AccountController@doSection');
 	Route::post('user/setTheme', 'UserController@setTheme');
   Route::post('remove_logo', 'AccountController@removeLogo');
@@ -276,7 +276,15 @@ define('SELF_HOST_AFFILIATE_KEY', '8S69AD');
 define('USER_TYPE_SELF_HOST', 'SELF_HOST');
 define('USER_TYPE_CLOUD_HOST', 'CLOUD_HOST');
 define('NEW_VERSION_AVAILABLE', 'NEW_VERSION_AVAILABLE');
-      
+
+
+// APISAT
+define('INVOICE_API_TIMBRAR','http://prod.apisat.mx/api/1.0/timbrar');
+define('INVOICE_API_CANCELAR','http://invoice.cloudandweb.com/api/1.0/cancelar');
+define('INVOICE_API_APISECRET','key_f4935b415b61cfa9f7d8622cd8679cd8');
+define('INVOICE_API_APIPUBLIC','key_2bbbc1cf67febfe3cec7a997ec598816');
+
+        
 /*
 define('GATEWAY_AMAZON', 30);
 define('GATEWAY_BLUEPAY', 31);
