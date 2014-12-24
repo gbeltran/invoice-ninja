@@ -2,27 +2,13 @@
 
 class CfdiController extends Controller {
 
-    public function getCfdi($publicId)
+    public function settings()
     {
-        $invoice = Invoice::scope($publicId)
-                ->withTrashed()
-                ->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
-                ->firstOrFail();
-        
-        $cfdi = DB::table('cfdi')->where('invoice_id', '=', $publicId)->first();
-        $data = array(
-          'invoice'    => $cfdi,
-           'public'     => $publicId,
-            'address'   => array($invoice->client->user_id => 
-                "{$invoice->client->name} | {$invoice->client->address1} {$invoice->client->address2} {$invoice->client->city} {$invoice->client->state} {$invoice->client->country->name} | RFC: {$invoice->client->rfc}")
-           
-        );
-		
-//        echo '<pre>';print_r($invoice->client);echo '</pre>';
-        return View::make('cfdi.view', $data);         
+//        return View::make('cfdi.settings'); 
+        echo 'd';
     }
     
-    public function postCfdi($publicId)
+    public function settingsPost($publicId)
     {
         if(Input::get('_token')){
             

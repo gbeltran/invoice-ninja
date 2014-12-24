@@ -1,7 +1,7 @@
 <?php
 /**
  * An helper file for Laravel 4, to provide autocomplete information to your IDE
- * Generated for Laravel 4.1.25 on 2014-11-25.
+ * Generated for Laravel 4.1.25 on 2014-12-23.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -7250,194 +7250,6 @@ namespace {
     }
 
 
-    class Paginator extends \Bootstrapper\Paginator{
-        
-        /**
-         * Get a new paginator instance.
-         *
-         * @param array $items
-         * @param int $total
-         * @param int $perPage
-         * @return \Illuminate\Pagination\Paginator 
-         * @static 
-         */
-        public static function make($items, $total, $perPage){
-            return \Illuminate\Pagination\Environment::make($items, $total, $perPage);
-        }
-        
-        /**
-         * Get the pagination view.
-         *
-         * @param \Illuminate\Pagination\Paginator $paginator
-         * @param string $view
-         * @return \Illuminate\View\View 
-         * @static 
-         */
-        public static function getPaginationView($paginator, $view = null){
-            return \Illuminate\Pagination\Environment::getPaginationView($paginator, $view);
-        }
-        
-        /**
-         * Get the number of the current page.
-         *
-         * @return int 
-         * @static 
-         */
-        public static function getCurrentPage(){
-            return \Illuminate\Pagination\Environment::getCurrentPage();
-        }
-        
-        /**
-         * Set the number of the current page.
-         *
-         * @param int $number
-         * @return void 
-         * @static 
-         */
-        public static function setCurrentPage($number){
-            \Illuminate\Pagination\Environment::setCurrentPage($number);
-        }
-        
-        /**
-         * Get the root URL for the request.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getCurrentUrl(){
-            return \Illuminate\Pagination\Environment::getCurrentUrl();
-        }
-        
-        /**
-         * Set the base URL in use by the paginator.
-         *
-         * @param string $baseUrl
-         * @return void 
-         * @static 
-         */
-        public static function setBaseUrl($baseUrl){
-            \Illuminate\Pagination\Environment::setBaseUrl($baseUrl);
-        }
-        
-        /**
-         * Set the input page parameter name used by the paginator.
-         *
-         * @param string $pageName
-         * @return void 
-         * @static 
-         */
-        public static function setPageName($pageName){
-            \Illuminate\Pagination\Environment::setPageName($pageName);
-        }
-        
-        /**
-         * Get the input page parameter name used by the paginator.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getPageName(){
-            return \Illuminate\Pagination\Environment::getPageName();
-        }
-        
-        /**
-         * Get the name of the pagination view.
-         *
-         * @param string $view
-         * @return string 
-         * @static 
-         */
-        public static function getViewName($view = null){
-            return \Illuminate\Pagination\Environment::getViewName($view);
-        }
-        
-        /**
-         * Set the name of the pagination view.
-         *
-         * @param string $viewName
-         * @return void 
-         * @static 
-         */
-        public static function setViewName($viewName){
-            \Illuminate\Pagination\Environment::setViewName($viewName);
-        }
-        
-        /**
-         * Get the locale of the paginator.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getLocale(){
-            return \Illuminate\Pagination\Environment::getLocale();
-        }
-        
-        /**
-         * Set the locale of the paginator.
-         *
-         * @param string $locale
-         * @return void 
-         * @static 
-         */
-        public static function setLocale($locale){
-            \Illuminate\Pagination\Environment::setLocale($locale);
-        }
-        
-        /**
-         * Get the active request instance.
-         *
-         * @return \Symfony\Component\HttpFoundation\Request 
-         * @static 
-         */
-        public static function getRequest(){
-            return \Illuminate\Pagination\Environment::getRequest();
-        }
-        
-        /**
-         * Set the active request instance.
-         *
-         * @param \Symfony\Component\HttpFoundation\Request $request
-         * @return void 
-         * @static 
-         */
-        public static function setRequest($request){
-            \Illuminate\Pagination\Environment::setRequest($request);
-        }
-        
-        /**
-         * Get the current view driver.
-         *
-         * @return \Illuminate\View\Environment 
-         * @static 
-         */
-        public static function getViewDriver(){
-            return \Illuminate\Pagination\Environment::getViewDriver();
-        }
-        
-        /**
-         * Set the current view driver.
-         *
-         * @param \Illuminate\View\Environment $view
-         * @return void 
-         * @static 
-         */
-        public static function setViewDriver($view){
-            \Illuminate\Pagination\Environment::setViewDriver($view);
-        }
-        
-        /**
-         * Get the translator instance.
-         *
-         * @return \Symfony\Component\Translation\TranslatorInterface 
-         * @static 
-         */
-        public static function getTranslator(){
-            return \Illuminate\Pagination\Environment::getTranslator();
-        }
-        
-    }
-
-
     class Password extends \Illuminate\Support\Facades\Password{
         
         /**
@@ -11721,6 +11533,649 @@ namespace {
     }
 
 
+    class Label extends \Bootstrapper\Label{
+        
+    }
+
+
+    class MediaObject extends \Bootstrapper\MediaObject{
+        
+    }
+
+
+    class Navbar extends \Bootstrapper\Navbar{
+        
+    }
+
+
+    class Navigation extends \Bootstrapper\Navigation{
+        
+    }
+
+
+    class Paginator extends \Bootstrapper\Paginator{
+        
+        /**
+         * Get a new paginator instance.
+         *
+         * @param array $items
+         * @param int $total
+         * @param int $perPage
+         * @return \Illuminate\Pagination\Paginator 
+         * @static 
+         */
+        public static function make($items, $total, $perPage){
+            return \Illuminate\Pagination\Environment::make($items, $total, $perPage);
+        }
+        
+        /**
+         * Get the pagination view.
+         *
+         * @param \Illuminate\Pagination\Paginator $paginator
+         * @param string $view
+         * @return \Illuminate\View\View 
+         * @static 
+         */
+        public static function getPaginationView($paginator, $view = null){
+            return \Illuminate\Pagination\Environment::getPaginationView($paginator, $view);
+        }
+        
+        /**
+         * Get the number of the current page.
+         *
+         * @return int 
+         * @static 
+         */
+        public static function getCurrentPage(){
+            return \Illuminate\Pagination\Environment::getCurrentPage();
+        }
+        
+        /**
+         * Set the number of the current page.
+         *
+         * @param int $number
+         * @return void 
+         * @static 
+         */
+        public static function setCurrentPage($number){
+            \Illuminate\Pagination\Environment::setCurrentPage($number);
+        }
+        
+        /**
+         * Get the root URL for the request.
+         *
+         * @return string 
+         * @static 
+         */
+        public static function getCurrentUrl(){
+            return \Illuminate\Pagination\Environment::getCurrentUrl();
+        }
+        
+        /**
+         * Set the base URL in use by the paginator.
+         *
+         * @param string $baseUrl
+         * @return void 
+         * @static 
+         */
+        public static function setBaseUrl($baseUrl){
+            \Illuminate\Pagination\Environment::setBaseUrl($baseUrl);
+        }
+        
+        /**
+         * Set the input page parameter name used by the paginator.
+         *
+         * @param string $pageName
+         * @return void 
+         * @static 
+         */
+        public static function setPageName($pageName){
+            \Illuminate\Pagination\Environment::setPageName($pageName);
+        }
+        
+        /**
+         * Get the input page parameter name used by the paginator.
+         *
+         * @return string 
+         * @static 
+         */
+        public static function getPageName(){
+            return \Illuminate\Pagination\Environment::getPageName();
+        }
+        
+        /**
+         * Get the name of the pagination view.
+         *
+         * @param string $view
+         * @return string 
+         * @static 
+         */
+        public static function getViewName($view = null){
+            return \Illuminate\Pagination\Environment::getViewName($view);
+        }
+        
+        /**
+         * Set the name of the pagination view.
+         *
+         * @param string $viewName
+         * @return void 
+         * @static 
+         */
+        public static function setViewName($viewName){
+            \Illuminate\Pagination\Environment::setViewName($viewName);
+        }
+        
+        /**
+         * Get the locale of the paginator.
+         *
+         * @return string 
+         * @static 
+         */
+        public static function getLocale(){
+            return \Illuminate\Pagination\Environment::getLocale();
+        }
+        
+        /**
+         * Set the locale of the paginator.
+         *
+         * @param string $locale
+         * @return void 
+         * @static 
+         */
+        public static function setLocale($locale){
+            \Illuminate\Pagination\Environment::setLocale($locale);
+        }
+        
+        /**
+         * Get the active request instance.
+         *
+         * @return \Symfony\Component\HttpFoundation\Request 
+         * @static 
+         */
+        public static function getRequest(){
+            return \Illuminate\Pagination\Environment::getRequest();
+        }
+        
+        /**
+         * Set the active request instance.
+         *
+         * @param \Symfony\Component\HttpFoundation\Request $request
+         * @return void 
+         * @static 
+         */
+        public static function setRequest($request){
+            \Illuminate\Pagination\Environment::setRequest($request);
+        }
+        
+        /**
+         * Get the current view driver.
+         *
+         * @return \Illuminate\View\Environment 
+         * @static 
+         */
+        public static function getViewDriver(){
+            return \Illuminate\Pagination\Environment::getViewDriver();
+        }
+        
+        /**
+         * Set the current view driver.
+         *
+         * @param \Illuminate\View\Environment $view
+         * @return void 
+         * @static 
+         */
+        public static function setViewDriver($view){
+            \Illuminate\Pagination\Environment::setViewDriver($view);
+        }
+        
+        /**
+         * Get the translator instance.
+         *
+         * @return \Symfony\Component\Translation\TranslatorInterface 
+         * @static 
+         */
+        public static function getTranslator(){
+            return \Illuminate\Pagination\Environment::getTranslator();
+        }
+        
+    }
+
+
+    class Progress extends \Bootstrapper\Progress{
+        
+    }
+
+
+    class Tabbable extends \Bootstrapper\Tabbable{
+        
+    }
+
+
+    class Table extends \Bootstrapper\Table{
+        
+    }
+
+
+    class Thumbnail extends \Bootstrapper\Thumbnail{
+        
+    }
+
+
+    class Typography extends \Bootstrapper\Typography{
+        
+    }
+
+
+    class Confide extends \Zizaco\Confide\ConfideFacade{
+        
+        /**
+         * Returns the Laravel application
+         *
+         * @return \Zizaco\Confide\Illuminate\Foundation\Application 
+         * @static 
+         */
+        public static function app(){
+            return \Zizaco\Confide\Confide::app();
+        }
+        
+        /**
+         * Returns an object of the model set in auth config
+         *
+         * @return object 
+         * @static 
+         */
+        public static function model(){
+            return \Zizaco\Confide\Confide::model();
+        }
+        
+        /**
+         * Get the currently authenticated user or null.
+         *
+         * @return \Zizaco\Confide\Zizaco\Confide\ConfideUser|null 
+         * @static 
+         */
+        public static function user(){
+            return \Zizaco\Confide\Confide::user();
+        }
+        
+        /**
+         * Set the user confirmation to true.
+         *
+         * @param string $code
+         * @return bool 
+         * @static 
+         */
+        public static function confirm($code){
+            return \Zizaco\Confide\Confide::confirm($code);
+        }
+        
+        /**
+         * Attempt to log a user into the application with
+         * password and identity field(s), usually email or username.
+         *
+         * @param array $credentials
+         * @param bool $confirmed_only
+         * @param mixed $identity_columns
+         * @return boolean Success
+         * @static 
+         */
+        public static function logAttempt($credentials, $confirmed_only = false, $identity_columns = array()){
+            return \Zizaco\Confide\Confide::logAttempt($credentials, $confirmed_only, $identity_columns);
+        }
+        
+        /**
+         * Checks if the credentials has been throttled by too
+         * much failed login attempts
+         *
+         * @param array $credentials
+         * @return mixed Value.
+         * @static 
+         */
+        public static function isThrottled($credentials){
+            return \Zizaco\Confide\Confide::isThrottled($credentials);
+        }
+        
+        /**
+         * Send email with information about password reset
+         *
+         * @param string $email
+         * @return bool 
+         * @static 
+         */
+        public static function forgotPassword($email){
+            return \Zizaco\Confide\Confide::forgotPassword($email);
+        }
+        
+        /**
+         * Checks to see if the user has a valid token.
+         *
+         * @param $token
+         * @return bool 
+         * @static 
+         */
+        public static function isValidToken($token){
+            return \Zizaco\Confide\Confide::isValidToken($token);
+        }
+        
+        /**
+         * Change user password
+         *
+         * @return string 
+         * @static 
+         */
+        public static function resetPassword($params){
+            return \Zizaco\Confide\Confide::resetPassword($params);
+        }
+        
+        /**
+         * Log the user out of the application.
+         *
+         * @return void 
+         * @static 
+         */
+        public static function logout(){
+            \Zizaco\Confide\Confide::logout();
+        }
+        
+        /**
+         * Display the default login view
+         *
+         * @deprecated 
+         * @return \Zizaco\Confide\Illuminate\View\View 
+         * @static 
+         */
+        public static function makeLoginForm(){
+            return \Zizaco\Confide\Confide::makeLoginForm();
+        }
+        
+        /**
+         * Display the default signup view
+         *
+         * @deprecated 
+         * @return \Zizaco\Confide\Illuminate\View\View 
+         * @static 
+         */
+        public static function makeSignupForm(){
+            return \Zizaco\Confide\Confide::makeSignupForm();
+        }
+        
+        /**
+         * Display the forget password view
+         *
+         * @deprecated 
+         * @return \Zizaco\Confide\Illuminate\View\View 
+         * @static 
+         */
+        public static function makeForgotPasswordForm(){
+            return \Zizaco\Confide\Confide::makeForgotPasswordForm();
+        }
+        
+        /**
+         * Display the forget password view
+         *
+         * @deprecated 
+         * @return \Zizaco\Confide\Illuminate\View\View 
+         * @static 
+         */
+        public static function makeResetPasswordForm($token){
+            return \Zizaco\Confide\Confide::makeResetPasswordForm($token);
+        }
+        
+        /**
+         * Check whether the controller's action exists.
+         * 
+         * Returns the url if it does. Otherwise false.
+         *
+         * @param $controllerAction
+         * @return string 
+         * @static 
+         */
+        public static function checkAction($action, $parameters = array(), $absolute = true){
+            return \Zizaco\Confide\Confide::checkAction($action, $parameters, $absolute);
+        }
+        
+    }
+
+
+    class Former extends \Former\Facades\Former{
+        
+        /**
+         * Register a macro with Former
+         *
+         * @param string $name The name of the macro
+         * @param Callable $macro The macro itself
+         * @return mixed 
+         * @static 
+         */
+        public static function macro($name, $macro){
+            return \Former\Former::macro($name, $macro);
+        }
+        
+        /**
+         * Check if a macro exists
+         *
+         * @param string $name
+         * @return boolean 
+         * @static 
+         */
+        public static function hasMacro($name){
+            return \Former\Former::hasMacro($name);
+        }
+        
+        /**
+         * Get a registered macro
+         *
+         * @param string $name
+         * @return \Former\Closure 
+         * @static 
+         */
+        public static function getMacro($name){
+            return \Former\Former::getMacro($name);
+        }
+        
+        /**
+         * Add values to populate the array
+         *
+         * @param mixed $values Can be an Eloquent object or an array
+         * @static 
+         */
+        public static function populate($values){
+            return \Former\Former::populate($values);
+        }
+        
+        /**
+         * Set the value of a particular field
+         *
+         * @param string $field The field's name
+         * @param mixed $value Its new value
+         * @static 
+         */
+        public static function populateField($field, $value){
+            return \Former\Former::populateField($field, $value);
+        }
+        
+        /**
+         * Get the value of a field
+         *
+         * @param string $field The field's name
+         * @param null $fallback
+         * @return mixed 
+         * @static 
+         */
+        public static function getValue($field, $fallback = null){
+            return \Former\Former::getValue($field, $fallback);
+        }
+        
+        /**
+         * Fetch a field value from both the new and old POST array
+         *
+         * @param string $name A field name
+         * @param string $fallback A fallback if nothing was found
+         * @return string The results
+         * @static 
+         */
+        public static function getPost($name, $fallback = null){
+            return \Former\Former::getPost($name, $fallback);
+        }
+        
+        /**
+         * Set the errors to use for validations
+         *
+         * @param \Former\Message $validator The result from a validation
+         * @return void 
+         * @static 
+         */
+        public static function withErrors($validator = null){
+            \Former\Former::withErrors($validator);
+        }
+        
+        /**
+         * Add live validation rules
+         *
+         * @param array  *$rules An array of Laravel rules
+         * @return void 
+         * @static 
+         */
+        public static function withRules(){
+            \Former\Former::withRules();
+        }
+        
+        /**
+         * Switch the framework used by Former
+         *
+         * @param string $framework The name of the framework to use
+         * @static 
+         */
+        public static function framework($framework = null){
+            return \Former\Former::framework($framework);
+        }
+        
+        /**
+         * Get a new framework instance
+         *
+         * @param string $framework
+         * @return \Former\Framework 
+         * @static 
+         */
+        public static function getFrameworkInstance($framework){
+            return \Former\Former::getFrameworkInstance($framework);
+        }
+        
+        /**
+         * Get an option from the config
+         *
+         * @param string $option The option
+         * @param mixed $default Optional fallback
+         * @return mixed 
+         * @static 
+         */
+        public static function getOption($option, $default = null){
+            return \Former\Former::getOption($option, $default);
+        }
+        
+        /**
+         * Set an option on the config
+         *
+         * @param string $option
+         * @param string $value
+         * @static 
+         */
+        public static function setOption($option, $value){
+            return \Former\Former::setOption($option, $value);
+        }
+        
+        /**
+         * Closes a form
+         *
+         * @return string A form closing tag
+         * @static 
+         */
+        public static function close(){
+            return \Former\Former::close();
+        }
+        
+        /**
+         * Get the errors for the current field
+         *
+         * @param string $name A field name
+         * @return string An error message
+         * @static 
+         */
+        public static function getErrors($name = null){
+            return \Former\Former::getErrors($name);
+        }
+        
+        /**
+         * Get a rule from the Rules array
+         *
+         * @param string $name The field to fetch
+         * @return array An array of rules
+         * @static 
+         */
+        public static function getRules($name){
+            return \Former\Former::getRules($name);
+        }
+        
+    }
+
+
+    class Datatable extends \Chumper\Datatable\Facades\DatatableFacade{
+        
+        /**
+         * 
+         *
+         * @param $query
+         * @return \Chumper\Datatable\QueryEngine 
+         * @static 
+         */
+        public static function query($query){
+            return \Chumper\Datatable\Datatable::query($query);
+        }
+        
+        /**
+         * 
+         *
+         * @param $collection
+         * @return \Chumper\Datatable\CollectionEngine 
+         * @static 
+         */
+        public static function collection($collection){
+            return \Chumper\Datatable\Datatable::collection($collection);
+        }
+        
+        /**
+         * 
+         *
+         * @return \Chumper\Datatable\Table 
+         * @static 
+         */
+        public static function table(){
+            return \Chumper\Datatable\Datatable::table();
+        }
+        
+        /**
+         * 
+         *
+         * @return bool True if the plugin should handle this request, false otherwise
+         * @static 
+         */
+        public static function shouldHandle(){
+            return \Chumper\Datatable\Datatable::shouldHandle();
+        }
+        
+    }
+
+
+    class Omnipay extends \Omnipay\Omnipay{
+        
+    }
+
+
+    class CreditCard extends \Omnipay\Common\CreditCard{
+        
+    }
+
+
     class Image extends \Intervention\Image\Facades\Image{
         
         /**
@@ -12334,461 +12789,6 @@ namespace {
         public static function checksum(){
             return \Intervention\Image\Image::checksum();
         }
-        
-    }
-
-
-    class Label extends \Bootstrapper\Label{
-        
-    }
-
-
-    class MediaObject extends \Bootstrapper\MediaObject{
-        
-    }
-
-
-    class Navbar extends \Bootstrapper\Navbar{
-        
-    }
-
-
-    class Navigation extends \Bootstrapper\Navigation{
-        
-    }
-
-
-    class Progress extends \Bootstrapper\Progress{
-        
-    }
-
-
-    class Tabbable extends \Bootstrapper\Tabbable{
-        
-    }
-
-
-    class Table extends \Bootstrapper\Table{
-        
-    }
-
-
-    class Thumbnail extends \Bootstrapper\Thumbnail{
-        
-    }
-
-
-    class Typography extends \Bootstrapper\Typography{
-        
-    }
-
-
-    class Confide extends \Zizaco\Confide\ConfideFacade{
-        
-        /**
-         * Returns the Laravel application
-         *
-         * @return \Zizaco\Confide\Illuminate\Foundation\Application 
-         * @static 
-         */
-        public static function app(){
-            return \Zizaco\Confide\Confide::app();
-        }
-        
-        /**
-         * Returns an object of the model set in auth config
-         *
-         * @return object 
-         * @static 
-         */
-        public static function model(){
-            return \Zizaco\Confide\Confide::model();
-        }
-        
-        /**
-         * Get the currently authenticated user or null.
-         *
-         * @return \Zizaco\Confide\Zizaco\Confide\ConfideUser|null 
-         * @static 
-         */
-        public static function user(){
-            return \Zizaco\Confide\Confide::user();
-        }
-        
-        /**
-         * Set the user confirmation to true.
-         *
-         * @param string $code
-         * @return bool 
-         * @static 
-         */
-        public static function confirm($code){
-            return \Zizaco\Confide\Confide::confirm($code);
-        }
-        
-        /**
-         * Attempt to log a user into the application with
-         * password and identity field(s), usually email or username.
-         *
-         * @param array $credentials
-         * @param bool $confirmed_only
-         * @param mixed $identity_columns
-         * @return boolean Success
-         * @static 
-         */
-        public static function logAttempt($credentials, $confirmed_only = false, $identity_columns = array()){
-            return \Zizaco\Confide\Confide::logAttempt($credentials, $confirmed_only, $identity_columns);
-        }
-        
-        /**
-         * Checks if the credentials has been throttled by too
-         * much failed login attempts
-         *
-         * @param array $credentials
-         * @return mixed Value.
-         * @static 
-         */
-        public static function isThrottled($credentials){
-            return \Zizaco\Confide\Confide::isThrottled($credentials);
-        }
-        
-        /**
-         * Send email with information about password reset
-         *
-         * @param string $email
-         * @return bool 
-         * @static 
-         */
-        public static function forgotPassword($email){
-            return \Zizaco\Confide\Confide::forgotPassword($email);
-        }
-        
-        /**
-         * Checks to see if the user has a valid token.
-         *
-         * @param $token
-         * @return bool 
-         * @static 
-         */
-        public static function isValidToken($token){
-            return \Zizaco\Confide\Confide::isValidToken($token);
-        }
-        
-        /**
-         * Change user password
-         *
-         * @return string 
-         * @static 
-         */
-        public static function resetPassword($params){
-            return \Zizaco\Confide\Confide::resetPassword($params);
-        }
-        
-        /**
-         * Log the user out of the application.
-         *
-         * @return void 
-         * @static 
-         */
-        public static function logout(){
-            \Zizaco\Confide\Confide::logout();
-        }
-        
-        /**
-         * Display the default login view
-         *
-         * @deprecated 
-         * @return \Zizaco\Confide\Illuminate\View\View 
-         * @static 
-         */
-        public static function makeLoginForm(){
-            return \Zizaco\Confide\Confide::makeLoginForm();
-        }
-        
-        /**
-         * Display the default signup view
-         *
-         * @deprecated 
-         * @return \Zizaco\Confide\Illuminate\View\View 
-         * @static 
-         */
-        public static function makeSignupForm(){
-            return \Zizaco\Confide\Confide::makeSignupForm();
-        }
-        
-        /**
-         * Display the forget password view
-         *
-         * @deprecated 
-         * @return \Zizaco\Confide\Illuminate\View\View 
-         * @static 
-         */
-        public static function makeForgotPasswordForm(){
-            return \Zizaco\Confide\Confide::makeForgotPasswordForm();
-        }
-        
-        /**
-         * Display the forget password view
-         *
-         * @deprecated 
-         * @return \Zizaco\Confide\Illuminate\View\View 
-         * @static 
-         */
-        public static function makeResetPasswordForm($token){
-            return \Zizaco\Confide\Confide::makeResetPasswordForm($token);
-        }
-        
-        /**
-         * Check whether the controller's action exists.
-         * 
-         * Returns the url if it does. Otherwise false.
-         *
-         * @param $controllerAction
-         * @return string 
-         * @static 
-         */
-        public static function checkAction($action, $parameters = array(), $absolute = true){
-            return \Zizaco\Confide\Confide::checkAction($action, $parameters, $absolute);
-        }
-        
-    }
-
-
-    class Former extends \Former\Facades\Former{
-        
-        /**
-         * Register a macro with Former
-         *
-         * @param string $name The name of the macro
-         * @param Callable $macro The macro itself
-         * @return mixed 
-         * @static 
-         */
-        public static function macro($name, $macro){
-            return \Former\Former::macro($name, $macro);
-        }
-        
-        /**
-         * Check if a macro exists
-         *
-         * @param string $name
-         * @return boolean 
-         * @static 
-         */
-        public static function hasMacro($name){
-            return \Former\Former::hasMacro($name);
-        }
-        
-        /**
-         * Get a registered macro
-         *
-         * @param string $name
-         * @return \Former\Closure 
-         * @static 
-         */
-        public static function getMacro($name){
-            return \Former\Former::getMacro($name);
-        }
-        
-        /**
-         * Add values to populate the array
-         *
-         * @param mixed $values Can be an Eloquent object or an array
-         * @static 
-         */
-        public static function populate($values){
-            return \Former\Former::populate($values);
-        }
-        
-        /**
-         * Set the value of a particular field
-         *
-         * @param string $field The field's name
-         * @param mixed $value Its new value
-         * @static 
-         */
-        public static function populateField($field, $value){
-            return \Former\Former::populateField($field, $value);
-        }
-        
-        /**
-         * Get the value of a field
-         *
-         * @param string $field The field's name
-         * @param null $fallback
-         * @return mixed 
-         * @static 
-         */
-        public static function getValue($field, $fallback = null){
-            return \Former\Former::getValue($field, $fallback);
-        }
-        
-        /**
-         * Fetch a field value from both the new and old POST array
-         *
-         * @param string $name A field name
-         * @param string $fallback A fallback if nothing was found
-         * @return string The results
-         * @static 
-         */
-        public static function getPost($name, $fallback = null){
-            return \Former\Former::getPost($name, $fallback);
-        }
-        
-        /**
-         * Set the errors to use for validations
-         *
-         * @param \Former\Message $validator The result from a validation
-         * @return void 
-         * @static 
-         */
-        public static function withErrors($validator = null){
-            \Former\Former::withErrors($validator);
-        }
-        
-        /**
-         * Add live validation rules
-         *
-         * @param array  *$rules An array of Laravel rules
-         * @return void 
-         * @static 
-         */
-        public static function withRules(){
-            \Former\Former::withRules();
-        }
-        
-        /**
-         * Switch the framework used by Former
-         *
-         * @param string $framework The name of the framework to use
-         * @static 
-         */
-        public static function framework($framework = null){
-            return \Former\Former::framework($framework);
-        }
-        
-        /**
-         * Get a new framework instance
-         *
-         * @param string $framework
-         * @return \Former\Framework 
-         * @static 
-         */
-        public static function getFrameworkInstance($framework){
-            return \Former\Former::getFrameworkInstance($framework);
-        }
-        
-        /**
-         * Get an option from the config
-         *
-         * @param string $option The option
-         * @param mixed $default Optional fallback
-         * @return mixed 
-         * @static 
-         */
-        public static function getOption($option, $default = null){
-            return \Former\Former::getOption($option, $default);
-        }
-        
-        /**
-         * Set an option on the config
-         *
-         * @param string $option
-         * @param string $value
-         * @static 
-         */
-        public static function setOption($option, $value){
-            return \Former\Former::setOption($option, $value);
-        }
-        
-        /**
-         * Closes a form
-         *
-         * @return string A form closing tag
-         * @static 
-         */
-        public static function close(){
-            return \Former\Former::close();
-        }
-        
-        /**
-         * Get the errors for the current field
-         *
-         * @param string $name A field name
-         * @return string An error message
-         * @static 
-         */
-        public static function getErrors($name = null){
-            return \Former\Former::getErrors($name);
-        }
-        
-        /**
-         * Get a rule from the Rules array
-         *
-         * @param string $name The field to fetch
-         * @return array An array of rules
-         * @static 
-         */
-        public static function getRules($name){
-            return \Former\Former::getRules($name);
-        }
-        
-    }
-
-
-    class Datatable extends \Chumper\Datatable\Facades\DatatableFacade{
-        
-        /**
-         * 
-         *
-         * @param $query
-         * @return \Chumper\Datatable\QueryEngine 
-         * @static 
-         */
-        public static function query($query){
-            return \Chumper\Datatable\Datatable::query($query);
-        }
-        
-        /**
-         * 
-         *
-         * @param $collection
-         * @return \Chumper\Datatable\CollectionEngine 
-         * @static 
-         */
-        public static function collection($collection){
-            return \Chumper\Datatable\Datatable::collection($collection);
-        }
-        
-        /**
-         * 
-         *
-         * @return \Chumper\Datatable\Table 
-         * @static 
-         */
-        public static function table(){
-            return \Chumper\Datatable\Datatable::table();
-        }
-        
-        /**
-         * 
-         *
-         * @return bool True if the plugin should handle this request, false otherwise
-         * @static 
-         */
-        public static function shouldHandle(){
-            return \Chumper\Datatable\Datatable::shouldHandle();
-        }
-        
-    }
-
-
-    class Omnipay extends \Omnipay\Omnipay{
-        
-    }
-
-
-    class CreditCard extends \Omnipay\Common\CreditCard{
         
     }
 

@@ -9,6 +9,7 @@
   	{{ HTML::nav_link('company/notifications', 'notifications') }}
     {{ HTML::nav_link('company/import_export', 'import_export', 'company/import_map') }}
   	{{ HTML::nav_link('company/advanced_settings/invoice_settings', 'advanced_settings', '*/advanced_settings/*') }}
+  	{{ HTML::nav_link('company/cfdi/settings', 'cfdi') }}
 	</ul>
 
 	<br/>

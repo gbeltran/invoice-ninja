@@ -271,6 +271,16 @@ class AccountController extends \BaseController {
 
 			return View::make('accounts.products', $data);		
 		}
+		else if ($section == 'cfdi')
+		{
+			$data = CfdiSettings::first();
+                        if (sizeof($data)==0){
+                            $data=array('apisecret'=>'','apipublic'=>'','posturl'=>'','cancelurl'=>'');
+                        }
+                        
+			return View::make('cfdi.settings', $data);		
+		}
+                
 	}
 
 	public function doSection($section = ACCOUNT_DETAILS, $subSection = false)
@@ -314,8 +324,19 @@ class AccountController extends \BaseController {
 		{
 			return AccountController::saveProducts();
 		}
+                else if ($section == 'cfdi')
+		{
+                    return AccountController::cdisettings();		
+		}
 	}
 
+        private function cdisettings(){
+            $input = Input::all();
+            CfdiSettings::saveSettings((object)$input);
+            
+            return View::make('cfdi.settings', $input);
+        }
+        
 	private function saveProducts()
 	{
 		$account = Auth::user()->account;

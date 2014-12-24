@@ -143,8 +143,7 @@ Route::group(array('before' => 'auth'), function()
 	Route::post('credits/bulk', 'CreditController@bulk');	
     
     //Route::resource('timesheets', 'TimesheetController');
-     Route::get('invoices/{id}/cfdi', array('as'=>'cfdi', 'uses'=>'CfdiController@getCfdi'));
-     Route::post('invoices/{id}/cfdi/post', array('as'=>'cfdiPost', 'uses'=>'CfdiController@postCfdi'));
+     Route::get('company/cfdi/settings', array('as'=>'cfdi', 'uses'=>'CfdiController@settings'));
 });
 
 // Route group for API
