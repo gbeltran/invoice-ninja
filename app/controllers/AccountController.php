@@ -333,7 +333,7 @@ class AccountController extends \BaseController {
         private function cdisettings(){
             $input = Input::all();
             CfdiSettings::saveSettings((object)$input);
-            
+
             return View::make('cfdi.settings', $input);
         }
         

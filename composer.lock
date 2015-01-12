@@ -264,12 +264,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "4ccd36396234272229fdec8a8370f0d2ccc2f8e9"
+                "reference": "548e12d45760ee66192029f4b642d2f4e3d64118"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/4ccd36396234272229fdec8a8370f0d2ccc2f8e9",
-                "reference": "4ccd36396234272229fdec8a8370f0d2ccc2f8e9",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/548e12d45760ee66192029f4b642d2f4e3d64118",
+                "reference": "548e12d45760ee66192029f4b642d2f4e3d64118",
                 "shasum": ""
             },
             "require": {
@@ -310,7 +310,7 @@
                 "profiler",
                 "webprofiler"
             ],
-            "time": "2014-12-23 15:31:16"
+            "time": "2014-12-24 08:00:07"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -5022,12 +5022,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "140ff50ea715138869c12f62595cc02465e41154"
+                "reference": "8a9f8c668e5053eddcc43cec52fcd48f14896dbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/140ff50ea715138869c12f62595cc02465e41154",
-                "reference": "140ff50ea715138869c12f62595cc02465e41154",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/8a9f8c668e5053eddcc43cec52fcd48f14896dbd",
+                "reference": "8a9f8c668e5053eddcc43cec52fcd48f14896dbd",
                 "shasum": ""
             },
             "require": {
@@ -5066,7 +5066,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2014-12-23 17:36:18"
+            "time": "2014-12-24 10:55:26"
         },
         {
             "name": "webpatser/laravel-countries",
@@ -6369,6 +6369,7 @@
         "codeception/codeception": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
 }
