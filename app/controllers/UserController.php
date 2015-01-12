@@ -468,4 +468,88 @@ class UserController extends BaseController {
 
         return Redirect::to('/')->with('clearGuestKey', true);
     }
+    
+    
+    public function register()
+    {
+        if(Confide::user())
+        {
+            Event::fire('user.login'); 
+            Session::reflash();
+
+            return Redirect::to('/dashboard');
+        }
+        else
+        {
+            return View::make('users.register');
+        }
+    }
+    
+    public function do_register()
+    {
+        $rules = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required',
+        ];
+
+        $validator = Validator::make(Input::all(), $rules);
+        
+        if ($validator->fails())
+        {
+            return Redirect::to('register')->withInput()->withErrors($validator);
+        }  
+        
+        $users = User::where('email',trim(Input::get('login_email')))->first();
+        if ($users){
+            return Redirect::to('register')->withInput()->withErrors($validator);
+        }
+        
+        $account = new Account;
+        $account->ip = Request::getClientIp();
+        $account->account_key = str_random(RANDOM_KEY_LENGTH);
+
+        if (Session::has(SESSION_LOCALE))
+        {
+            $locale = Session::get(SESSION_LOCALE);
+            if ($language = Language::whereLocale($locale)->first())
+            {
+                    $account->language_id = $language->id;
+            }
+        }
+        
+        $account->save();
+                 
+        $lastUser = User::withTrashed()->orderBy('public_id', 'DESC')->first();
+        
+        $user = new User;
+        $user->account_id = $account->id;
+        $user->first_name = trim(Input::get('first_name'));
+        $user->last_name = trim(Input::get('last_name'));
+        $user->username = trim(Input::get('email'));
+        $user->email = trim(Input::get('email'));
+        $user->registered = true;
+        $user->password = Input::get('password');
+        $user->password_confirmation = $user->password;
+        $user->public_id =  $lastUser->public_id + 1;          
+        $user->save();
+        
+        $input = array(
+            'email'    => Input::get( 'email' ), // May be the username too
+            'username' => Input::get( 'email' ), // so we have to pass both
+            'password' => Input::get( 'password' ),
+            'remember' => true,
+        );
+        
+        if ( Input::get( 'email' ) && Confide::logAttempt( $input, false ) ) 
+        {            
+            Event::fire('user.login');
+            return Redirect::intended('/dashboard'); // change it to '/admin', '/dashboard' or something
+        }
+        
+        
+        return Redirect::to('login');
+        
+    }
 }

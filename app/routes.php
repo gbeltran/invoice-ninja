@@ -66,6 +66,8 @@ Route::post('signup/submit', 'AccountController@submitSignup');
 // Confide routes
 Route::get('login', 'UserController@login');
 Route::post('login', 'UserController@do_login');
+Route::get('register', 'UserController@register');
+Route::post('register', 'UserController@do_register');
 Route::get('user/confirm/{code}', 'UserController@confirm');
 Route::get('forgot_password', 'UserController@forgot_password');
 Route::post('forgot_password', 'UserController@do_forgot_password');
