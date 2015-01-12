@@ -73,6 +73,9 @@
             <p class="link">
 			{{ link_to('forgot_password', 'Forgot your password?') }}
             </p>
+            <p class="link">
+			{{ link_to('register', 'Sign up for a new account!') }}
+            </p>
 		
 			<!-- if there are login errors, show them here -->
 			@if ( Session::get('error') )
