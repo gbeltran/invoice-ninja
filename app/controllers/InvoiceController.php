@@ -24,6 +24,7 @@ class InvoiceController extends \BaseController {
 
 	public function index()
 	{
+    
 		$data = [
 			'title' => trans('texts.invoices'),
 			'entityType'=>ENTITY_INVOICE, 
@@ -210,9 +211,13 @@ class InvoiceController extends \BaseController {
 
 	public function edit($publicId, $clone = false)
 	{
-		$invoice = Invoice::scope($publicId)->withTrashed()->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')->firstOrFail();
+            $user_id = Auth::user()->id;
+            //echo '<pre>';print_R(Auth::user());echo  '</pre>';
+//		$invoice = Invoice::scope($publicId)->withTrashed()->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')->firstOrFail();
+		$invoice = Invoice::where('public_id',$publicId)->where('account_id',Auth::user()->account_id)->withTrashed()->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')->firstOrFail();
+                
+   
 		$entityType = $invoice->getEntityType();
-
   	$contactIds = DB::table('invitations')
 			->join('contacts', 'contacts.id', '=','invitations.contact_id')
 			->where('invitations.invoice_id', '=', $invoice->id)
@@ -278,14 +283,16 @@ class InvoiceController extends \BaseController {
 				}
 			}
 		}
+                
+//                echo '<pre>';print_R($data);
 			
-                    $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
+                    $_cfdi = Cfdi::where('invoice_id','=', $invoice->id)->first();
                     $data['cfdi'] = false;
                     if(sizeof($_cfdi)>0){
                         $data['cfdi'] = $_cfdi['flag'] == 1 ? true : false;
                         return View::make('invoices.edit_view', $data);
                     }	
-                
+//                
 		return View::make('invoices.edit', $data);
 	}
 
@@ -622,5 +629,9 @@ class InvoiceController extends \BaseController {
             else{
                 Cfdi::cancelCfdi($publicId);                
             }                
+        }
+        
+        public function test(){
+            
         }
 }

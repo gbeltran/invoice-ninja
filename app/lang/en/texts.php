@@ -496,4 +496,6 @@ return array(
     'askfor'  => 'Request',
     'cfdifilescreated'  => 'Digital Files were created',
     
+    'invoiceregistration' => 'Invoice Ninja Account Registration',
+    
 );
