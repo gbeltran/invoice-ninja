@@ -57,7 +57,7 @@
 		{{ Former::open('login')->addClass('form-signin') }}
 			<div class="modal-header">
                 <img src="{{ asset('images/icon-login.png') }}" />
-                <h4>Invoice Ninja Account Login</h4></div>
+                <h4>{{ trans('texts.invoicelogin') }}</h4></div>
             <div class="inner">
 			<p>
 				{{ $errors->first('login_email') }}
@@ -65,16 +65,16 @@
 			</p>
 
 			<p>
-				{{ Form::text('login_email', Input::old('login_email'), array('placeholder' => 'Email address')) }}
-				{{ Form::password('login_password', array('placeholder' => 'Password')) }}
+				{{ Form::text('login_email', Input::old('login_email'), array('placeholder' => trans('texts.email'))) }}
+				{{ Form::password('login_password', array('placeholder' => trans('texts.password'))) }}
 			</p>
 
-			<p>{{ Button::success_submit('Let’s go', array('class' => 'btn-lg'))->block() }}</p>
+			<p>{{ Button::success_submit(trans('texts.signin'), array('class' => 'btn-lg'))->block() }}</p>
             <p class="link">
-			{{ link_to('forgot_password', 'Forgot your password?') }}
+			{{ link_to('forgot_password', trans('texts.forgot_password')) }}
             </p>
             <p class="link">
-			{{ link_to('register', 'Sign up for a new account!') }}
+			{{ link_to('register', trans('texts.signup')) }}
             </p>
 		
 			<!-- if there are login errors, show them here -->

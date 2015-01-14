@@ -78,7 +78,7 @@ class Activity extends Eloquent
 		$activity = Activity::getBlank();
 		$activity->client_id = $client->id;
 		$activity->activity_type_id = ACTIVITY_TYPE_CREATE_CLIENT;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'created', $client);
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:customer_created]', $client);
 		$activity->save();		
 
 		if ($notify)
@@ -94,7 +94,7 @@ class Activity extends Eloquent
 			$activity = Activity::getBlank();
 			$activity->client_id = $client->id;
 			$activity->activity_type_id = ACTIVITY_TYPE_DELETE_CLIENT;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'deleted', $client);
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:customer_deleted]', $client);
 			$activity->save();		
 		}
 	}
@@ -106,7 +106,7 @@ class Activity extends Eloquent
 			$activity = Activity::getBlank();
 			$activity->client_id = $client->id;
 			$activity->activity_type_id = ACTIVITY_TYPE_ARCHIVE_CLIENT;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'archived', $client);
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:customer_archived]', $client);
 			$activity->balance = $client->balance;
 			$activity->save();
 		}
@@ -117,7 +117,7 @@ class Activity extends Eloquent
 		$activity = Activity::getBlank();
 		$activity->client_id = $client->id;
 		$activity->activity_type_id = ACTIVITY_TYPE_RESTORE_CLIENT;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'restored', $client);
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:customer_restored]', $client);
 		$activity->balance = $client->balance;
 		$activity->save();
 	}	
@@ -126,11 +126,11 @@ class Activity extends Eloquent
 	{
 		if (Auth::check()) 
 		{
-			$message = Utils::encodeActivity(Auth::user(), 'created', $invoice);			
+			$message = Utils::encodeActivity(Auth::user(), '[message:created]', $invoice);			
 		} 
 		else 
 		{
-			$message = Utils::encodeActivity(null, 'created', $invoice);
+			$message = Utils::encodeActivity(null, '[message:created]', $invoice);
 		}
 
 		$adjustment = 0;
@@ -162,7 +162,7 @@ class Activity extends Eloquent
 			$activity->invoice_id = $invoice->id;
 			$activity->client_id = $invoice->client_id;
 			$activity->activity_type_id = $invoice->is_quote ? ACTIVITY_TYPE_ARCHIVE_QUOTE : ACTIVITY_TYPE_ARCHIVE_INVOICE;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'archived', $invoice);
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:invoice_archived]', $invoice);
 			$activity->balance = $invoice->client->balance;
 
 			$activity->save();
@@ -175,7 +175,7 @@ class Activity extends Eloquent
 		$activity->invoice_id = $invoice->id;
 		$activity->client_id = $invoice->client_id;
 		$activity->activity_type_id = $invoice->is_quote ? ACTIVITY_TYPE_RESTORE_QUOTE : ACTIVITY_TYPE_RESTORE_INVOICE;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'restored', $invoice);
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:invoice_restored]', $invoice);
 		$activity->balance = $invoice->client->balance;
 
 		$activity->save();
@@ -191,7 +191,7 @@ class Activity extends Eloquent
 		$activity->invoice_id = $invitation->invoice_id;
 		$activity->contact_id = $invitation->contact_id;
 		$activity->activity_type_id = $invitation->invoice ? ACTIVITY_TYPE_EMAIL_QUOTE : ACTIVITY_TYPE_EMAIL_INVOICE;
-		$activity->message = Utils::encodeActivity(Auth::check() ? Auth::user() : null, 'emailed', $invitation->invoice, $invitation->contact);
+		$activity->message = Utils::encodeActivity(Auth::check() ? Auth::user() : null, '[message:invoice_emailed]', $invitation->invoice, $invitation->contact);
 		$activity->balance = $client->balance;
 		$activity->save();
 	}
@@ -213,7 +213,7 @@ class Activity extends Eloquent
 			$activity->client_id = $invoice->client_id;
 			$activity->invoice_id = $invoice->id;
 			$activity->activity_type_id = $invoice->is_quote ? ACTIVITY_TYPE_DELETE_QUOTE : ACTIVITY_TYPE_DELETE_INVOICE;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'deleted', $invoice);
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:invoice_deleted]', $invoice);
 			$activity->balance = $invoice->client->balance;
 			$activity->adjustment = $invoice->is_quote ? 0 : $invoice->balance * -1;
 			$activity->save();		
@@ -239,7 +239,7 @@ class Activity extends Eloquent
 			$activity->client_id = $invoice->client_id;
 			$activity->invoice_id = $invoice->id;
 			$activity->activity_type_id = $invoice->is_quote ? ACTIVITY_TYPE_UPDATE_QUOTE : ACTIVITY_TYPE_UPDATE_INVOICE;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'updated', $invoice);
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:invoice_updated]', $invoice);
 			$activity->balance = $client->balance;
 			$activity->adjustment = $invoice->is_quote || $invoice->is_recurring ? 0 : $diff;
 			$activity->json_backup = $backupInvoice->hidePrivateFields()->toJSON();
@@ -278,7 +278,7 @@ class Activity extends Eloquent
 		$activity->contact_id = $invitation->contact_id;
 		$activity->invoice_id = $invitation->invoice_id;
 		$activity->activity_type_id = $invitation->invoice->is_quote ? ACTIVITY_TYPE_VIEW_QUOTE : ACTIVITY_TYPE_VIEW_INVOICE;
-		$activity->message = Utils::encodeActivity($invitation->contact, 'viewed', $invitation->invoice);
+		$activity->message = Utils::encodeActivity($invitation->contact, '[message:invoice_viewed]', $invitation->invoice);
 		$activity->balance = $invitation->invoice->client->balance;
 		$activity->save();
 	}
@@ -296,12 +296,12 @@ class Activity extends Eloquent
 		{
 			$activity = Activity::getBlank($client);
 			$activity->contact_id = $payment->contact_id;
-			$activity->message = Utils::encodeActivity($payment->invitation->contact, 'entered ' . $payment->getName() . ' for ', $payment->invoice);
+			$activity->message = Utils::encodeActivity($payment->invitation->contact, '[message:entered_' . $payment->getName() . '_for] ', $payment->invoice);
 		}
 		else
 		{
 			$activity = Activity::getBlank($client);
-			$message = $payment->payment_type_id == PAYMENT_TYPE_CREDIT ? 'applied credit for ' : 'entered ' . $payment->getName() . ' for ';
+			$message = $payment->payment_type_id == PAYMENT_TYPE_CREDIT ? 'applied credit for ' : '[message:entered_' . $payment->getName() . '_for]';
 			$activity->message = Utils::encodeActivity(Auth::user(), $message, $payment->invoice);
 		}
 
@@ -345,7 +345,7 @@ class Activity extends Eloquent
 			$activity->client_id = $invoice->client_id;
 			$activity->invoice_id = $invoice->id;
 			$activity->activity_type_id = ACTIVITY_TYPE_DELETE_PAYMENT;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'deleted ' . $payment->getName());
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:deleted_' . $payment->getName().']');
 			$activity->balance = $client->balance;
 			$activity->adjustment = $payment->amount;
 			$activity->save();		
@@ -392,7 +392,7 @@ class Activity extends Eloquent
 		$activity->invoice_id = $invoice->id;
 		$activity->client_id = $client->id;
 		$activity->activity_type_id = ACTIVITY_TYPE_ARCHIVE_PAYMENT;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'archived ' . $payment->getName());
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:archived_' . $payment->getName().']');
 		$activity->balance = $client->balance;
 		$activity->adjustment = 0;
 		$activity->save();
@@ -408,7 +408,7 @@ class Activity extends Eloquent
 		$activity->invoice_id = $invoice->id;
 		$activity->client_id = $client->id;
 		$activity->activity_type_id = ACTIVITY_TYPE_RESTORE_PAYMENT;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'restored ' . $payment->getName());
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:restored_' . $payment->getName().']');
 		$activity->balance = $client->balance;
 		$activity->adjustment = 0;
 		$activity->save();
@@ -417,7 +417,7 @@ class Activity extends Eloquent
 	public static function createCredit($credit)
 	{
 		$activity = Activity::getBlank();
-		$activity->message = Utils::encodeActivity(Auth::user(), 'entered ' . Utils::formatMoney($credit->amount, $credit->client->currency_id) . ' credit');
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:entered_credit] ' . Utils::formatMoney($credit->amount, $credit->client->currency_id) . ' [message:credit_credit]');
 		$activity->credit_id = $credit->id;
 		$activity->client_id = $credit->client_id;
 		$activity->activity_type_id = ACTIVITY_TYPE_CREATE_CREDIT;
@@ -433,7 +433,7 @@ class Activity extends Eloquent
 			$activity->credit_id = $credit->id;
 			$activity->client_id = $credit->client_id;
 			$activity->activity_type_id = ACTIVITY_TYPE_DELETE_CREDIT;
-			$activity->message = Utils::encodeActivity(Auth::user(), 'deleted ' . Utils::formatMoney($credit->balance, $credit->client->currency_id) . ' credit');
+			$activity->message = Utils::encodeActivity(Auth::user(), '[message:deleted_credit] ' . Utils::formatMoney($credit->balance, $credit->client->currency_id) . ' [message:credit_credit]');
 			$activity->balance = $credit->client->balance;
 			$activity->save();		
 		}
@@ -475,7 +475,7 @@ class Activity extends Eloquent
 		$activity->client_id = $credit->client_id;
 		$activity->credit_id = $credit->id;
 		$activity->activity_type_id = ACTIVITY_TYPE_ARCHIVE_CREDIT;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'archived ' . Utils::formatMoney($credit->balance, $credit->client->currency_id) . ' credit');
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:archived_credit] ' . Utils::formatMoney($credit->balance, $credit->client->currency_id) . ' [message:credit_credit]');
 		$activity->balance = $credit->client->balance;
 		$activity->save();
 	}
@@ -486,7 +486,7 @@ class Activity extends Eloquent
 		$activity->client_id = $credit->client_id;
 		$activity->credit_id = $credit->id;
 		$activity->activity_type_id = ACTIVITY_TYPE_RESTORE_CREDIT;
-		$activity->message = Utils::encodeActivity(Auth::user(), 'restored ' . Utils::formatMoney($credit->balance, $credit->client->currency_id) . ' credit');
+		$activity->message = Utils::encodeActivity(Auth::user(), '[message:restored_credit] ' . Utils::formatMoney($credit->balance, $credit->client->currency_id) . ' [message:credit_credit]');
 		$activity->balance = $credit->client->balance;
 		$activity->save();
 	}

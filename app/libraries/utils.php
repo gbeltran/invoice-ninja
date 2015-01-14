@@ -485,7 +485,7 @@ class Utils
 	{
 		$person = $person ? $person->getDisplayName() : '<i>System</i>';
 		$entity = $entity ? '[' . $entity->getActivityKey() . ']' : '';
-		$otherPerson = $otherPerson ? 'to ' . $otherPerson->getDisplayName() : '';
+		$otherPerson = $otherPerson ? trans('texts.m_to'). ' ' . $otherPerson->getDisplayName() : '';
 
 		return trim("$person $action $entity $otherPerson");
 	}
@@ -503,9 +503,27 @@ class Utils
 			$name = $matches[3];
 
 			$link = link_to($type . 's/' . $publicId, $name);
-			$message = str_replace($match, "$type $link", $message);
+			$message = str_replace($match, "$link", $message);
 		}
+                
+                $pattern = '/\[([\w]*):([\w]*)\]/i';
+                preg_match($pattern, $message, $matches);
 
+                if (count($matches) > 0)
+		{
+                    $activity = trans('texts.m_'.$matches[2]);
+                    $message = str_replace($matches[0], $activity, $message);
+                }
+                
+                $pattern = '/\[([\w]*):([\w]*)\]/i';
+                preg_match($pattern, $message, $matches);
+
+                if (count($matches) > 0)
+		{
+                    $activity = trans('texts.m_'.$matches[2]);
+                    $message = str_replace($matches[0], $activity, $message);
+                }
+                
 		return $message;
 	}
 

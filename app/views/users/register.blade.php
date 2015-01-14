@@ -56,22 +56,22 @@
 <div class="container">
     {{ Former::open('register')->addClass('form-signin') }}
     <div class="modal-header">
-        <h4>Invoice Ninja Account Registration</h4>
+        <h4>{{ trans('texts.invoiceregistration') }}</h4>
     </div>
     <div class="inner">
         <p>
-            {{ Form::text('first_name', Input::old('first_name'), array('placeholder' => 'First Name')) }}
+            {{ Form::text('first_name', Input::old('first_name'), array('placeholder' => trans('texts.first_name'))) }}
             {{ $errors->first('first_name') }}
-            {{ Form::text('last_name', Input::old('last_name'), array('placeholder' => 'Last Name')) }}
+            {{ Form::text('last_name', Input::old('last_name'), array('placeholder' => trans('texts.last_name'))) }}
             {{ $errors->first('last_name') }}
-            {{ Form::text('email', Input::old('login_email'), array('placeholder' => 'Email address')) }}
+            {{ Form::text('email', Input::old('login_email'), array('placeholder' => trans('texts.email'))) }}
             {{ $errors->first('email') }}
-            {{ Form::password('password', array('placeholder' => 'Password')) }}
+            {{ Form::password('password', array('placeholder' => trans('texts.password'))) }}
             {{ $errors->first('password') }}
         </p>
 
-        <p>{{ Button::success_submit('Register', array('class' => 'btn-lg'))->block() }}</p>
-        <p class="link">{{ link_to('login', 'Sign in!') }}</p>
+        <p>{{ Button::success_submit(trans('texts.register'), array('class' => 'btn-lg'))->block() }}</p>
+        <p class="link">{{ link_to('login', trans('texts.signin')) }}</p>
     </div>
     {{ Former::close() }}
 </div>

@@ -493,8 +493,12 @@ class UserController extends BaseController {
             'email' => 'required|unique:users',
             'password' => 'required',
         ];
+        
+        $messages= array(
+                'first_name.required'=> trans('texts.first_name_required'),
+                'last_name.required'=> trans('texts.last_name_required'));
 
-        $validator = Validator::make(Input::all(), $rules);
+        $validator = Validator::make(Input::all(), $rules, $messages);
         
         if ($validator->fails())
         {

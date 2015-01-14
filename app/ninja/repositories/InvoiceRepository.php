@@ -20,7 +20,7 @@ class InvoiceRepository
             ->where('contacts.deleted_at', '=', null)
     				->where('invoices.is_recurring', '=', false)    			
     				->where('contacts.is_primary', '=', true)	
-  					->select('clients.public_id as client_public_id', 'invoice_number', 'invoice_status_id', 'clients.name as client_name', 'invoices.public_id', 'amount', 'invoices.balance', 'invoice_date', 'due_date', 'invoice_statuses.name as invoice_status_name', 'clients.currency_id', 'contacts.first_name', 'contacts.last_name', 'contacts.email', 'quote_id', 'quote_invoice_id', 'invoices.deleted_at', 'invoices.is_deleted');
+  					->select('clients.public_id as client_public_id', 'invoice_number', 'invoice_status_id', 'clients.name as client_name', 'invoices.public_id', 'invoices.id as invoice_id' , 'amount', 'invoices.balance', 'invoice_date', 'due_date', 'invoice_statuses.name as invoice_status_name', 'clients.currency_id', 'contacts.first_name', 'contacts.last_name', 'contacts.email', 'quote_id', 'quote_invoice_id', 'invoices.deleted_at', 'invoices.is_deleted');
 
       if (!\Session::get('show_trash:' . $entityType))
       {
@@ -118,13 +118,15 @@ class InvoiceRepository
               ->where('invoices.is_quote', '=', $entityType == ENTITY_QUOTE ? true : false);
 
     $table = \Datatable::query($query);      
-
+    
     if (!$clientPublicId) 
     {
       $table->addColumn('checkbox', function($model) { return '<input type="checkbox" name="ids[]" value="' . $model->public_id . '" ' . Utils::getEntityRowClass($model) . '>'; });
     }
     
-    $table->addColumn("invoice_number", function($model) use ($entityType) { return link_to("{$entityType}s/" . $model->public_id . '/edit', $model->invoice_number, ['class' => Utils::getEntityRowClass($model)]); });
+    $table->addColumn("invoice_number", function($model) use ($entityType) { 
+  return link_to("{$entityType}s/" . $model->public_id . '/edit', $model->invoice_number, ['class' => Utils::getEntityRowClass($model)]);  });
+    
 
     if (!$clientPublicId) 
     {
@@ -141,7 +143,7 @@ class InvoiceRepository
 
     return $table->addColumn('due_date', function($model) { return Utils::fromSqlDate($model->due_date); })
         ->addColumn('invoice_status_name', function($model) { return $model->invoice_status_name; })
-        ->addColumn('cfdi', function($model) {   return   \Cfdi::cfdiTable($model->public_id); })
+        ->addColumn('cfdi', function($model) {   return   \Cfdi::cfdiTable($model->invoice_id); })
         ->addColumn('dropdown', function($model) use ($entityType)
         { 
           if ($model->is_deleted)
