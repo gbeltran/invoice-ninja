@@ -605,7 +605,7 @@ class InvoiceController extends \BaseController {
 				if ($result->codigo == 201)
 					Session::flash('message', 'CFDI Cancelado');
 				else
-					Session::flash('error', $result->message);
+					Session::flash('error', $result->mensaje);
 
 
 				return Redirect::to('invoices');
@@ -638,7 +638,7 @@ class InvoiceController extends \BaseController {
                         Session::flash('message', trans('texts.cfdifilescreated'));
                     }
                     else{
-                        Session::flash('error', trans('texts.cfdifileserror').'.<br> #<strong>'.$response->code. '</strong>: <i>'. $response->message. '</i>.');	
+                        Session::flash('error', trans('texts.cfdifileserror').'.<br> #<strong>'.$response->codigo. '</strong>: <i>'. $response->mensaje. '</i>.');
                     }
                 }
                 else{
