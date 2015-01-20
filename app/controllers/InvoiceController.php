@@ -602,7 +602,7 @@ class InvoiceController extends \BaseController {
 
 				$result = json_decode($result);
 
-				if ($result->code == 201)
+				if ($result->codigo == 201)
 					Session::flash('message', 'CFDI Cancelado');
 				else
 					Session::flash('error', $result->message);
@@ -646,7 +646,7 @@ class InvoiceController extends \BaseController {
                 }
             }
             else{
-                Cfdi::cancelCfdi($publicId);
+                InvoiceController::cancelCfdi($publicId);
             }                
         }
         
