@@ -40,7 +40,7 @@ class CfdiController extends Controller {
                 $result = file_get_contents($url, false, $context);            
                 $response = json_decode($result);
 		
-                if ($response->code == 0){
+                if ($response->code == 200){
                     $files = $response->files;
                     $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->another, 'sale_id'=> $publicId);
                     Cfdi::saveCFDI($upd);

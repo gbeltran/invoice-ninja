@@ -139,7 +139,7 @@ class Cfdi extends Eloquent
     public static function cancelCfdi($publicId, $api)
     {
         $cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
-        
+
         $url = $api->cancelurl;
         $json =  array(
             'public_key'    =>  $api->apipublic, 
@@ -201,34 +201,38 @@ class Cfdi extends Eloquent
         unlink(public_path().'/cfdi.xml');
     }
     public static function sendCfdi($publicId, $invoice)
-    {            
-        $api = CfdiSettings::first();
-        if (sizeof($api)>0){            
-            try {
-                $json =  json_encode(Cfdi::setJson($publicId, $invoice, $api));
+    {
 
-                $url = $api->posturl;
-                $data = array('post-json' => $json);
+        try {
+            $json = json_encode(Cfdi::setJson($publicId, $invoice));
+            $url = INVOICE_API_TIMBRAR;
+            $data = array('datos' => $json);
+            $time = date('c');
+            $llave_privada = Invoice::transformarLlave(INVOICE_API_TIMBRAR, 'post', $time);
+            $options = array(
+                'http' => array(
+                    'ignore_errors' => true,
+                    'header' => "Content-type: application/x-www-form-urlencoded\r\n" .
+                        "llave_privada: " . $llave_privada . "\r\n" .
+                        "llave_prublica: " . INVOICE_API_APIPUBLIC . "\r\n" .
+                        "timestamp: " . $time . "\r\n",
 
-                $options = array(
-                    'http' => array(
-                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                        'method'  => 'POST',
-                        'content' => http_build_query($data),
-                    ),
-                );
+                    'method' => 'POST',
+                    'content' => http_build_query($data),
+                ),
+            );
 
-                $context  = stream_context_create($options);
-                $result = file_get_contents($url, false, $context);            
-                $response = json_decode($result);
+            $context = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            $response = json_decode($result);
 
-            } catch (Exception $exc) {
-                $response = $exc->getTraceAsString();
-            }
+        } catch (Exception $exc) {
+            $response = $exc->getTraceAsString();
         }
-        
-        return $response;                
-        
+
+
+        return $response;
+
     }
     
 
