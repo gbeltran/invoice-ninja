@@ -625,9 +625,9 @@ class InvoiceController extends \BaseController {
                 if (sizeof($api)>0){            
                     $response = Cfdi::sendCfdi($publicId, $invoice);
 
-                    if ($response->code == 200){
-                        $files = $response->files;
-                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->another, 'sale_id'=> $publicId);
+                    if ($response->codigo == 200){
+                        $files = $response->archivos;
+                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->uuid, 'sale_id'=> $publicId);
                         Cfdi::saveCFDI($upd);
 
                         try {
