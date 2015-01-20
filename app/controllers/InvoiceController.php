@@ -579,7 +579,7 @@ class InvoiceController extends \BaseController {
         
         public function cancelCfdi($publicId)
 		{
-			$invoice=Invoice::find($publicId);
+			$invoice=Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)->first();
 			if(count($invoice)) {
 				$uuid=$invoice->invoice_cfdi()->first()->cancel;
 				$time = date('c');
@@ -616,7 +616,7 @@ class InvoiceController extends \BaseController {
         public function CFDI($publicId, $type)
         {
             if ($type=='cfdi'){
-                $invoice = Invoice::scope($publicId)
+                $invoice = Invoice::scope($publicId)->where('account_id','=',Auth::user()->account_id)
                 ->withTrashed()
                 ->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
                 ->firstOrFail();
