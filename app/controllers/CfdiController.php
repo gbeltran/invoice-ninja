@@ -21,10 +21,16 @@ class CfdiController extends Controller {
                 $json =  json_encode(Cfdi::setJson($publicId, $invoice));
                 $url = INVOICE_API_TIMBRAR;
                 $data = array('post-json' => $json);
-            
+                $time=date('c');
+                $llave_privada=Invoice::transformarLlave(INVOICE_API_TIMBRAR,'post',$time);
                 $options = array(
                     'http' => array(
-                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                        'ignore_errors' => true,
+                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n".
+                            "llave_privada: ".$llave_privada."\r\n".
+                            "llave_prublica: ". INVOICE_API_APIPUBLIC . "\r\n".
+                            "timestamp: ".$time."\r\n",
+
                         'method'  => 'POST',
                         'content' => http_build_query($data),
                     ),

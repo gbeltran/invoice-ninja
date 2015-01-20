@@ -577,22 +577,41 @@ class InvoiceController extends \BaseController {
 		return self::edit($publicId, true);
 	}
         
-        public function cancelCfdi($publicId){
-            $api = CfdiSettings::first();
-            if (sizeof($api)>0){ 
-                $response = Cfdi::cancelCfdi($publicId, $api);
-                if ($response->code == 0)
-                    Session::flash('message', 'CFDI Cancelado');
-                else
-                    Session::flash('error', $response->message);                
-            }
-            else{
-                 Session::flash('error', trans('texts.apisettingserror'));                  
-            }
-            
-            return Redirect::to('invoices');
-             
-        }
+        public function cancelCfdi($publicId)
+		{
+			$invoice=Invoice::find($publicId);
+			if(count($invoice)) {
+				$uuid=$invoice->invoice_cfdi()->first()->cancel;
+				$time = date('c');
+				$url = INVOICE_API_CANCELAR;
+				$llave_privada = Invoice::transformarLlave($url, 'delete', $time);
+
+				$parametros = array(
+					'http' => array(
+						'ignore_errors' => true,
+						'header' => "llave_publica: " . INVOICE_API_APIPUBLIC . " \r\n" .
+							"llave_privada: " . $llave_privada . " \r\n" .
+							"timestamp: " . $time . " \r\n" .
+							"rfc: " . $invoice->client()->first()->rfc . " \r\n",
+						'method' => 'DELETE',
+					),
+				);
+				$context = stream_context_create($parametros);
+
+				$result = file_get_contents(INVOICE_API_TIMBRAR.'/'.$uuid, false, $context);
+
+				$result = json_decode($result);
+
+				if ($result->code == 201)
+					Session::flash('message', 'CFDI Cancelado');
+				else
+					Session::flash('error', $result->message);
+
+
+				return Redirect::to('invoices');
+			}
+
+		}
         
         public function CFDI($publicId, $type)
         {
@@ -627,7 +646,7 @@ class InvoiceController extends \BaseController {
                 }
             }
             else{
-                Cfdi::cancelCfdi($publicId);                
+                Cfdi::cancelCfdi($publicId);
             }                
         }
         
