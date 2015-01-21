@@ -238,270 +238,233 @@ class InvoiceRepository
 	}
 
 	public function save($publicId, $data, $entityType)
-	{
-		if ($publicId) 
-		{
-			$invoice = Invoice::scope($publicId)->firstOrFail();
-		} 
-		else 
-		{				
-			$invoice = Invoice::createNew();			
-
-      if ($entityType == ENTITY_QUOTE)
-      {
-        $invoice->is_quote = true;
-      }
-		}			
-		
-		$invoice->client_id = $data['client_id'];
-		$invoice->discount = round(Utils::parseFloat($data['discount']), 2);
-    $invoice->is_amount_discount = $data['is_amount_discount'] ? true : false;
-		$invoice->invoice_number = trim($data['invoice_number']);
-		$invoice->is_recurring = $data['is_recurring'] && !Utils::isDemo() ? true : false;
-    $invoice->invoice_date = Utils::toSqlDate($data['invoice_date']);
-      
-    if ($invoice->is_recurring)
     {
-      $invoice->frequency_id = $data['frequency_id'] ? $data['frequency_id'] : 0;
-      $invoice->start_date = Utils::toSqlDate($data['start_date']);
-      $invoice->end_date = Utils::toSqlDate($data['end_date']);
-      $invoice->due_date = null;
-    }
-    else
-    {
-      $invoice->due_date = Utils::toSqlDate($data['due_date']);
-      $invoice->frequency_id = 0;
-      $invoice->start_date = null;
-      $invoice->end_date = null;
-    }
+      if ($publicId) {
+        $invoice = Invoice::where('public_id', '=', $publicId)->where('account_id', '=', Auth::user()->account_id)->first();
+      } else {
+        $invoice = Invoice::createNew();
 
-		$invoice->terms = trim($data['terms']);
-		$invoice->public_notes = trim($data['public_notes']);
-		$invoice->po_number = trim($data['po_number']);
-    $invoice->invoice_design_id = $data['invoice_design_id'];
-
-		if (isset($data['tax_name']) && isset($data['tax_rate']) && Utils::parseFloat($data['tax_rate']) > 0)
-		{
-			$invoice->tax_rate = Utils::parseFloat($data['tax_rate']);
-			$invoice->tax_name = trim($data['tax_name']);
-		} 
-		else
-		{
-			$invoice->tax_rate = 0;
-			$invoice->tax_name = '';
-		}
-		
-		$total = 0;						
-		
-		foreach ($data['invoice_items'] as $item) 
-		{
-			if (!$item->cost && !$item->product_key && !$item->notes)
-			{
-				continue;
-			}
-
-			$invoiceItemCost = Utils::parseFloat($item->cost);
-			$invoiceItemQty = Utils::parseFloat($item->qty);
-			$invoiceItemTaxRate = 0;
-
-			if (isset($item->tax_rate) && Utils::parseFloat($item->tax_rate) > 0)
-			{
-				$invoiceItemTaxRate = Utils::parseFloat($item->tax_rate);				
-			}
-
-			$lineTotal = $invoiceItemCost * $invoiceItemQty;
-      
-			$total += round($lineTotal + ($lineTotal * $invoiceItemTaxRate / 100), 2);
-		}
-
-		if ($invoice->discount > 0)
-		{
-      if ($invoice->is_amount_discount)
-      {
-        $total -= $invoice->discount;
-      }
-      else
-      {
-        $total *= (100 - $invoice->discount) / 100;
-      }
-		}
-
-    $invoice->custom_value1 = round($data['custom_value1'], 2);
-    $invoice->custom_value2 = round($data['custom_value2'], 2);
-    $invoice->custom_taxes1 = $data['custom_taxes1'] ? true : false;
-    $invoice->custom_taxes2 = $data['custom_taxes2'] ? true : false;
-
-    // custom fields charged taxes
-    if ($invoice->custom_value1 && $invoice->custom_taxes1) {
-      $total += $invoice->custom_value1;
-    }
-    if ($invoice->custom_value2 && $invoice->custom_taxes2) {
-      $total += $invoice->custom_value2;
-    }
-
-		$total += $total * $invoice->tax_rate / 100;
-    $total = round($total, 2);
-
-    // custom fields not charged taxes
-    if ($invoice->custom_value1 && !$invoice->custom_taxes1) {
-      $total += $invoice->custom_value1;
-    }
-    if ($invoice->custom_value2 && !$invoice->custom_taxes2) {
-      $total += $invoice->custom_value2;
-    }
-
-    if ($publicId)    
-    {
-		  $invoice->balance = $total - ($invoice->amount - $invoice->balance);
-    }
-    else
-    {
-      $invoice->balance = $total; 
-    }
-
-    $invoice->amount = $total;
-		$invoice->save();
-
-    $invoice->invoice_items()->forceDelete();
-    
-    foreach ($data['invoice_items'] as $item) 
-    {
-      if (!$item->cost && !$item->product_key && !$item->notes)
-      {
-        continue;
+        if ($entityType == ENTITY_QUOTE) {
+          $invoice->is_quote = true;
+        }
       }
 
-      if ($item->product_key)
-      {
-        $product = Product::findProductByKey(trim($item->product_key));
+      $invoice->client_id = $data['client_id'];
+      $invoice->discount = round(Utils::parseFloat($data['discount']), 2);
+      $invoice->is_amount_discount = $data['is_amount_discount'] ? true : false;
+      $invoice->invoice_number = trim($data['invoice_number']);
+      $invoice->is_recurring = $data['is_recurring'] && !Utils::isDemo() ? true : false;
+      $invoice->invoice_date = Utils::toSqlDate($data['invoice_date']);
 
-        if (!$product)
-        {
-          $product = Product::createNew();            
-          $product->product_key = trim($item->product_key);
+      if ($invoice->is_recurring) {
+        $invoice->frequency_id = $data['frequency_id'] ? $data['frequency_id'] : 0;
+        $invoice->start_date = Utils::toSqlDate($data['start_date']);
+        $invoice->end_date = Utils::toSqlDate($data['end_date']);
+        $invoice->due_date = null;
+      } else {
+        $invoice->due_date = Utils::toSqlDate($data['due_date']);
+        $invoice->frequency_id = 0;
+        $invoice->start_date = null;
+        $invoice->end_date = null;
+      }
+
+      $invoice->terms = trim($data['terms']);
+      $invoice->public_notes = trim($data['public_notes']);
+      $invoice->po_number = trim($data['po_number']);
+      $invoice->invoice_design_id = $data['invoice_design_id'];
+
+      if (isset($data['tax_name']) && isset($data['tax_rate']) && Utils::parseFloat($data['tax_rate']) > 0) {
+        $invoice->tax_rate = Utils::parseFloat($data['tax_rate']);
+        $invoice->tax_name = trim($data['tax_name']);
+      } else {
+        $invoice->tax_rate = 0;
+        $invoice->tax_name = '';
+      }
+
+      $total = 0;
+
+      foreach ($data['invoice_items'] as $item) {
+        if (!$item->cost && !$item->product_key && !$item->notes) {
+          continue;
         }
 
-        if (\Auth::user()->account->update_products)
-        {
-          $product->notes = $item->notes;
-          $product->cost = $item->cost;
-          //$product->qty = $item->qty;
+        $invoiceItemCost = Utils::parseFloat($item->cost);
+        $invoiceItemQty = Utils::parseFloat($item->qty);
+        $invoiceItemTaxRate = 0;
+
+        if (isset($item->tax_rate) && Utils::parseFloat($item->tax_rate) > 0) {
+          $invoiceItemTaxRate = Utils::parseFloat($item->tax_rate);
         }
-        
-        $product->save();
+
+        $lineTotal = $invoiceItemCost * $invoiceItemQty;
+
+        $total += round($lineTotal + ($lineTotal * $invoiceItemTaxRate / 100), 2);
       }
 
-      $invoiceItem = InvoiceItem::createNew();
-      $invoiceItem->product_id = isset($product) ? $product->id : null;
-      $invoiceItem->product_key = trim($invoice->is_recurring ? $item->product_key : Utils::processVariables($item->product_key));
-      $invoiceItem->notes = trim($invoice->is_recurring ? $item->notes : Utils::processVariables($item->notes));
-      $invoiceItem->cost = Utils::parseFloat($item->cost);
-      $invoiceItem->qty = Utils::parseFloat($item->qty);
-      $invoiceItem->tax_rate = 0;
-
-      if (isset($item->tax_rate) && Utils::parseFloat($item->tax_rate) > 0)
-      {
-        $invoiceItem->tax_rate = Utils::parseFloat($item->tax_rate);
-        $invoiceItem->tax_name = trim($item->tax_name);
+      if ($invoice->discount > 0) {
+        if ($invoice->is_amount_discount) {
+          $total -= $invoice->discount;
+        } else {
+          $total *= (100 - $invoice->discount) / 100;
+        }
       }
 
-      $invoice->invoice_items()->save($invoiceItem);
+      $invoice->custom_value1 = round($data['custom_value1'], 2);
+      $invoice->custom_value2 = round($data['custom_value2'], 2);
+      $invoice->custom_taxes1 = $data['custom_taxes1'] ? true : false;
+      $invoice->custom_taxes2 = $data['custom_taxes2'] ? true : false;
+
+      // custom fields charged taxes
+      if ($invoice->custom_value1 && $invoice->custom_taxes1) {
+        $total += $invoice->custom_value1;
+      }
+      if ($invoice->custom_value2 && $invoice->custom_taxes2) {
+        $total += $invoice->custom_value2;
+      }
+
+      $total += $total * $invoice->tax_rate / 100;
+      $total = round($total, 2);
+
+      // custom fields not charged taxes
+      if ($invoice->custom_value1 && !$invoice->custom_taxes1) {
+        $total += $invoice->custom_value1;
+      }
+      if ($invoice->custom_value2 && !$invoice->custom_taxes2) {
+        $total += $invoice->custom_value2;
+      }
+
+      if ($publicId) {
+        $invoice->balance = $total - ($invoice->amount - $invoice->balance);
+      } else {
+        $invoice->balance = $total;
+      }
+
+      $invoice->amount = $total;
+      $invoice->save();
+
+      $invoice->invoice_items()->forceDelete();
+
+      foreach ($data['invoice_items'] as $item) {
+        if (!$item->cost && !$item->product_key && !$item->notes) {
+          continue;
+        }
+
+        if ($item->product_key) {
+          $product = Product::findProductByKey(trim($item->product_key));
+
+          if (!$product) {
+            $product = Product::createNew();
+            $product->product_key = trim($item->product_key);
+          }
+
+          if (\Auth::user()->account->update_products) {
+            $product->notes = $item->notes;
+            $product->cost = $item->cost;
+            //$product->qty = $item->qty;
+          }
+
+          $product->save();
+        }
+
+        $invoiceItem = InvoiceItem::createNew();
+        $invoiceItem->product_id = isset($product) ? $product->id : null;
+        $invoiceItem->product_key = trim($invoice->is_recurring ? $item->product_key : Utils::processVariables($item->product_key));
+        $invoiceItem->notes = trim($invoice->is_recurring ? $item->notes : Utils::processVariables($item->notes));
+        $invoiceItem->cost = Utils::parseFloat($item->cost);
+        $invoiceItem->qty = Utils::parseFloat($item->qty);
+        $invoiceItem->tax_rate = 0;
+
+        if (isset($item->tax_rate) && Utils::parseFloat($item->tax_rate) > 0) {
+          $invoiceItem->tax_rate = Utils::parseFloat($item->tax_rate);
+          $invoiceItem->tax_name = trim($item->tax_name);
+        }
+
+        $invoice->invoice_items()->save($invoiceItem);
+      }
+
+      if ($data['set_default_terms']) {
+        $account = \Auth::user()->account;
+        $account->invoice_terms = $invoice->terms;
+        $account->save();
+      }
+
+      return $invoice;
     }
-
-		if ($data['set_default_terms'])
-		{
-			$account = \Auth::user()->account;
-			$account->invoice_terms = $invoice->terms;
-			$account->save();
-		}
-
-		return $invoice;
-	}
 
   public function cloneInvoice($invoice, $quotePublicId = null)
   {
     $invoice->load('invitations', 'invoice_items');
     $account = $invoice->account;
-    
+
     $clone = Invoice::createNew($invoice);
     $clone->balance = $invoice->amount;
-    
+
     // if the invoice prefix is diff than quote prefix, use the same number for the invoice
-    if (($account->invoice_number_prefix || $account->quote_number_prefix) && $account->invoice_number_prefix != $account->quote_number_prefix)
-    {
+    if (($account->invoice_number_prefix || $account->quote_number_prefix) && $account->invoice_number_prefix != $account->quote_number_prefix) {
       $invoiceNumber = $invoice->invoice_number;
-      if (strpos($invoiceNumber, $account->quote_number_prefix) === 0)
-      {
+      if (strpos($invoiceNumber, $account->quote_number_prefix) === 0) {
         $invoiceNumber = substr($invoiceNumber, strlen($account->quote_number_prefix));
       }
       $clone->invoice_number = $account->invoice_number_prefix . $invoiceNumber;
+    } else {
+      $clone->invoice_number = $account->getNextInvoiceNumber();
     }
-    else
-    {
-      $clone->invoice_number = $account->getNextInvoiceNumber();  
-    }    
 
     foreach ([
-      'client_id',       
-      'discount', 
-      'is_amount_discount',
-      'invoice_date', 
-      'po_number', 
-      'due_date', 
-      'is_recurring', 
-      'frequency_id', 
-      'start_date', 
-      'end_date', 
-      'terms', 
-      'public_notes', 
-      'invoice_design_id', 
-      'tax_name', 
-      'tax_rate', 
-      'amount', 
-      'is_quote',
-      'custom_value1',
-      'custom_value2',
-      'custom_taxes1',
-      'custom_taxes2'] as $field) 
-    {
-      $clone->$field = $invoice->$field;  
-    }   
+                 'client_id',
+                 'discount',
+                 'is_amount_discount',
+                 'invoice_date',
+                 'po_number',
+                 'due_date',
+                 'is_recurring',
+                 'frequency_id',
+                 'start_date',
+                 'end_date',
+                 'terms',
+                 'public_notes',
+                 'invoice_design_id',
+                 'tax_name',
+                 'tax_rate',
+                 'amount',
+                 'is_quote',
+                 'custom_value1',
+                 'custom_value2',
+                 'custom_taxes1',
+                 'custom_taxes2'] as $field) {
+      $clone->$field = $invoice->$field;
+    }
 
-    if ($quotePublicId)
-    {
+    if ($quotePublicId) {
       $clone->is_quote = false;
       $clone->quote_id = $quotePublicId;
-    }    
-    
+    }
+
     $clone->save();
 
-    if ($quotePublicId)
-    {
+    if ($quotePublicId) {
       $invoice->quote_invoice_id = $clone->public_id;
       $invoice->save();
     }
-    
-    foreach ($invoice->invoice_items as $item)
-    {
+
+    foreach ($invoice->invoice_items as $item) {
       $cloneItem = InvoiceItem::createNew($invoice);
-      
+
       foreach ([
-        'product_id', 
-        'product_key', 
-        'notes', 
-        'cost', 
-        'qty', 
-        'tax_name', 
-        'tax_rate'] as $field) 
-      {
+                   'product_id',
+                   'product_key',
+                   'notes',
+                   'cost',
+                   'qty',
+                   'tax_name',
+                   'tax_rate'] as $field) {
         $cloneItem->$field = $item->$field;
       }
 
-      $clone->invoice_items()->save($cloneItem);      
-    }   
+      $clone->invoice_items()->save($cloneItem);
+    }
 
-    foreach ($invoice->invitations as $invitation)
-    {
+    foreach ($invoice->invitations as $invitation) {
       $cloneInvitation = Invitation::createNew($invoice);
       $cloneInvitation->contact_id = $invitation->contact_id;
       $cloneInvitation->invitation_key = str_random(RANDOM_KEY_LENGTH);

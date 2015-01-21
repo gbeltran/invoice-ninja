@@ -376,7 +376,8 @@ class InvoiceController extends \BaseController {
                 $entityType = Input::get('entityType');
 
                 if ($publicId):
-                    $_cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
+					$invoice=Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)->first();
+                    $_cfdi = Cfdi::where('invoice_id','=', $invoice->id)->first();
                     $all = Input::all();
                     if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
                         $this->CFDI($publicId, $all['_formType']);   
