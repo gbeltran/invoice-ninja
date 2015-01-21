@@ -577,27 +577,46 @@ class InvoiceController extends \BaseController {
 		return self::edit($publicId, true);
 	}
         
-        public function cancelCfdi($publicId){
-            $api = CfdiSettings::first();
-            if (sizeof($api)>0){ 
-                $response = Cfdi::cancelCfdi($publicId, $api);
-                if ($response->code == 0)
-                    Session::flash('message', 'CFDI Cancelado');
-                else
-                    Session::flash('error', $response->message);                
-            }
-            else{
-                 Session::flash('error', trans('texts.apisettingserror'));                  
-            }
-            
-            return Redirect::to('invoices');
-             
-        }
+        public function cancelCfdi($publicId)
+		{
+			$invoice=Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)->first();
+			if(count($invoice)) {
+				$uuid=$invoice->invoice_cfdi()->first()->cancel;
+				$time = date('c');
+				$url = INVOICE_API_CANCELAR;
+				$llave_privada = Invoice::transformarLlave($url, 'delete', $time);
+
+				$parametros = array(
+					'http' => array(
+						'ignore_errors' => true,
+						'header' => "llave_publica: " . INVOICE_API_APIPUBLIC . " \r\n" .
+							"llave_privada: " . $llave_privada . " \r\n" .
+							"timestamp: " . $time . " \r\n" .
+							"rfc: " . $invoice->client()->first()->rfc . " \r\n",
+						'method' => 'DELETE',
+					),
+				);
+				$context = stream_context_create($parametros);
+
+				$result = file_get_contents(INVOICE_API_TIMBRAR.'/'.$uuid, false, $context);
+
+				$result = json_decode($result);
+
+				if ($result->codigo == 201)
+					Session::flash('message', 'CFDI Cancelado');
+				else
+					Session::flash('error', $result->mensaje);
+
+
+				return Redirect::to('invoices');
+			}
+
+		}
         
         public function CFDI($publicId, $type)
         {
             if ($type=='cfdi'){
-                $invoice = Invoice::scope($publicId)
+                $invoice = Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)
                 ->withTrashed()
                 ->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
                 ->firstOrFail();
@@ -605,10 +624,10 @@ class InvoiceController extends \BaseController {
                 $api = CfdiSettings::first();
                 if (sizeof($api)>0){            
                     $response = Cfdi::sendCfdi($publicId, $invoice);
-
-                    if ($response->code == 0){
-                        $files = $response->files;
-                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->another, 'sale_id'=> $publicId);
+					dd($response);
+                    if ($response->codigo == 200){
+                        $files = $response->archivos;
+                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->uuid, 'sale_id'=> $publicId);
                         Cfdi::saveCFDI($upd);
 
                         try {
@@ -619,7 +638,7 @@ class InvoiceController extends \BaseController {
                         Session::flash('message', trans('texts.cfdifilescreated'));
                     }
                     else{
-                        Session::flash('error', trans('texts.cfdifileserror').'.<br> #<strong>'.$response->code. '</strong>: <i>'. $response->message. '</i>.');	
+                        Session::flash('error', trans('texts.cfdifileserror').'.<br> #<strong>'.$response->codigo. '</strong>: <i>'. $response->mensaje. '</i>.');
                     }
                 }
                 else{
@@ -627,7 +646,7 @@ class InvoiceController extends \BaseController {
                 }
             }
             else{
-                Cfdi::cancelCfdi($publicId);                
+                InvoiceController::cancelCfdi($publicId);
             }                
         }
         

@@ -10,14 +10,13 @@ class Cfdi extends Eloquent
         return "<a href='{$url}'>Get</a>";
     }
     
-    public static function setJson($publicId, $invoice, $api){
+    public static function setJson($publicId, $invoice){
         $json = array(
-            'bill'  => array(
-                'items'         => Cfdi::setItems($publicId),
+            'factura'  => array(
+                'articulos'         => Cfdi::setItems($publicId),
                 'receptor'      => Cfdi::setReceptor($invoice),
-                'transmitter'   => Cfdi::setTransmitter($api),
-                'options'       => Cfdi::setOptions(),
-                'totals'        => Cfdi::setTotals($invoice)
+                'opciones'       => Cfdi::setOptions(),
+                'totales'        => Cfdi::setTotals($invoice)
         ));
 
         return $json;
@@ -32,9 +31,9 @@ class Cfdi extends Eloquent
             $item->total = $item->cost * $item->qty;
             $single = array(
                 'id'            => $item->product_key,
-                'description'   => $item->notes,
-                'uc'            => number_format($item->cost, 2, '.', ''),
-                'qty'           => number_format($item->qty, 0, '.', ''),
+                'descripcion'   => $item->notes,
+                'precio'            => number_format($item->cost, 2, '.', ''),
+                'cantidad'           => number_format($item->qty, 0, '.', ''),
                 'total'         => number_format($item->total, 2, '.', '')
             );
             array_push($items, $single);               
@@ -43,21 +42,14 @@ class Cfdi extends Eloquent
         return $items;            
     }
 
-    public static  function setTransmitter($api){        
-        $transmitter = array(
-            'private_key'   => $api->apisecret,
-            'public_key'   => $api->apipublic
-        );
 
-        return $transmitter;
-    }
 
     public static  function setOptions(){
         $options = array(
-            'voucher'   => 'Egreso',
-            'money'     => 'MXN',
-            'method'    => 'Transferencia Bancaria',
-            'kind'      => 'Pago en una sola exhibicion'
+            'tipo_factura'   => 'Egreso',
+            'moneda'     => 'MXN',
+            'pago'    => 'Transferencia Bancaria',
+            'forma_pago'      => 'Pago en una sola exhibicion'
         );
 
         return $options;
@@ -72,8 +64,8 @@ class Cfdi extends Eloquent
         $iva = ($sale->tax_rate * $amount) / 100;
         
         $totals = array(
-            'amount'    => number_format($amount, 2, '.', ''),
-            'aggregate' => number_format($sale->tax_rate, 2, '.', ''),
+            'monto'    => number_format($amount, 2, '.', ''),
+            'agregado' => number_format($sale->tax_rate, 2, '.', ''),
             'iva'       => number_format($iva, 2, '.', ''),
             'isr'       => number_format(0, 2, '.', ''),
             'riva'      => number_format(0, 2, '.', ''),
@@ -89,22 +81,19 @@ class Cfdi extends Eloquent
     {
         $contact = $address->client->contacts;
         $receptor = array(
-            'name'              => $contact[0]->first_name . ' '. $contact[0]->last_name,
-            'alias'             => $contact[0]->first_name . ' '. $contact[0]->last_name,
+            'nombre'              => $contact[0]->first_name . ' '. $contact[0]->last_name,
             'rfc'               => $address->client->rfc,
-            'logo'              => '',
-            'phone'             => $contact[0]->phone,
-            'address'           => array(
-                'id'            =>  $address->client->id,
-                'street'        =>  $address->client->address1,
+            'telefono'             => $contact[0]->phone,
+            'direccion'           => array(
+                'calle'        =>  $address->client->address1,
                 'exterior'      =>  $address->client->address2,
                 'interior'      =>  0,
-                'state_id'      =>  $address->client->state,
-                'city_id'       =>  $address->client->city,
-                'zipcode_id'    =>  $address->client->postal_code,
-                'email'         =>  $contact[0]->email,
-                'contact_name'  =>  $contact[0]->first_name . ' '. $contact[0]->last_name,
-                'colony'        =>  $address->client->suburb
+                'estado'      =>  $address->client->state,
+                'ciudad'       =>  $address->client->city,
+                'codigo_postal'    =>  $address->client->postal_code,
+                'correo'         =>  $contact[0]->email,
+                'nombre_contacto'  =>  $contact[0]->first_name . ' '. $contact[0]->last_name,
+                'colonia'        =>  $address->client->suburb
             )
         );
 
@@ -150,7 +139,7 @@ class Cfdi extends Eloquent
     public static function cancelCfdi($publicId, $api)
     {
         $cfdi = Cfdi::where('invoice_id','=', $publicId)->first();
-        
+
         $url = $api->cancelurl;
         $json =  array(
             'public_key'    =>  $api->apipublic, 
@@ -212,34 +201,38 @@ class Cfdi extends Eloquent
         unlink(public_path().'/cfdi.xml');
     }
     public static function sendCfdi($publicId, $invoice)
-    {            
-        $api = CfdiSettings::first();
-        if (sizeof($api)>0){            
-            try {
-                $json =  json_encode(Cfdi::setJson($publicId, $invoice, $api));
+    {
 
-                $url = $api->posturl;
-                $data = array('post-json' => $json);
+        try {
+            $json = json_encode(Cfdi::setJson($publicId, $invoice));
+            $url = INVOICE_API_TIMBRAR;
+            $data = array('datos' => $json);
+            $time = date('c');
+            $llave_privada = Invoice::transformarLlave(INVOICE_API_TIMBRAR, 'post', $time);
+            $options = array(
+                'http' => array(
+                    'ignore_errors' => true,
+                    'header' => "Content-type: application/x-www-form-urlencoded\r\n" .
+                        "llave_privada: " . $llave_privada . "\r\n" .
+                        "llave_prublica: " . INVOICE_API_APIPUBLIC . "\r\n" .
+                        "timestamp: " . $time . "\r\n",
 
-                $options = array(
-                    'http' => array(
-                        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                        'method'  => 'POST',
-                        'content' => http_build_query($data),
-                    ),
-                );
+                    'method' => 'POST',
+                    'content' => http_build_query($data),
+                ),
+            );
 
-                $context  = stream_context_create($options);
-                $result = file_get_contents($url, false, $context);            
-                $response = json_decode($result);
+            $context = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            $response = json_decode($result);
 
-            } catch (Exception $exc) {
-                $response = $exc->getTraceAsString();
-            }
+        } catch (Exception $exc) {
+            $response = $exc->getTraceAsString();
         }
-        
-        return $response;                
-        
+
+
+        return $response;
+
     }
     
 

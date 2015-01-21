@@ -281,10 +281,10 @@ define('NEW_VERSION_AVAILABLE', 'NEW_VERSION_AVAILABLE');
 
 
 // APISAT
-define('INVOICE_API_TIMBRAR','http://prod.apisat.mx/api/1.0/timbrar');
-define('INVOICE_API_CANCELAR','http://invoice.cloudandweb.com/api/1.0/cancelar');
-define('INVOICE_API_APISECRET','key_f4935b415b61cfa9f7d8622cd8679cd8');
-define('INVOICE_API_APIPUBLIC','key_2bbbc1cf67febfe3cec7a997ec598816');
+define('INVOICE_API_TIMBRAR','http://prod.apisat.mx/api/1.0/factura');
+define('INVOICE_API_CANCELAR','http://prod.apisat.mx/api/1.0/factura/{{uuid}}');
+define('INVOICE_API_APISECRET','key_54ff39b83358b1f596d676e1fbbb1d9f');
+define('INVOICE_API_APIPUBLIC','key_b3ba8cd41b8cbd56098a1a519c76f8bd');
 
         
 /*
