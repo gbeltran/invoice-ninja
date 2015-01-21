@@ -175,9 +175,9 @@ class Cfdi extends Eloquent
     {
         $invoice->invoice_status_id = INVOICE_STATUS_SENT;
         $invoice->save();
-        $file = file_get_contents("http://".substr($files->pdf,2));
+        $file = file_get_contents($files->pdf);
         file_put_contents(public_path().'/cfdi.pdf', $file);
-        $file = file_get_contents("http://".substr($files->xml,2));
+        $file = file_get_contents($files->xml);
         file_put_contents(public_path().'/cfdi.xml', $file);
 
         $contact = $invoice->client->contacts;

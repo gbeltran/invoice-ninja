@@ -6,7 +6,7 @@ use Invitation;
 use Product;
 use Utils;
 use TaxRate;
-
+use Illuminate\Support\Facades\Auth;
 class InvoiceRepository
 {
 	public function getInvoices($accountId, $clientPublicId = false, $entityType = ENTITY_INVOICE, $filter = false)
