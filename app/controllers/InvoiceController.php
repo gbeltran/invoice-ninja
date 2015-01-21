@@ -616,7 +616,7 @@ class InvoiceController extends \BaseController {
         public function CFDI($publicId, $type)
         {
             if ($type=='cfdi'){
-                $invoice = Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)
+                $invoice = Invoice::scope($publicId)->where('account_id','=',Auth::user()->account_id)
                 ->withTrashed()
                 ->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
                 ->firstOrFail();
@@ -624,10 +624,10 @@ class InvoiceController extends \BaseController {
                 $api = CfdiSettings::first();
                 if (sizeof($api)>0){            
                     $response = Cfdi::sendCfdi($publicId, $invoice);
-					dd($response);
+					
                     if ($response->codigo == 200){
                         $files = $response->archivos;
-                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->uuid, 'sale_id'=> $publicId);
+                        $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->uuid, 'sale_id'=> $invoice->id);
                         Cfdi::saveCFDI($upd);
 
                         try {

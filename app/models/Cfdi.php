@@ -25,7 +25,9 @@ class Cfdi extends Eloquent
     public static function setItems($publicId)
     {
         $items = array();
-        $invoice_items = InvoiceItem::where('invoice_id','=',$publicId)->get();        
+	$invoice=Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)->first();
+	
+        $invoice_items = InvoiceItem::where('invoice_id','=',$invoice->id)->get();        
 
         foreach ($invoice_items as $key => $item) {
             $item->total = $item->cost * $item->qty;
@@ -48,7 +50,7 @@ class Cfdi extends Eloquent
         $options = array(
             'tipo_factura'   => 'Egreso',
             'moneda'     => 'MXN',
-            'pago'    => 'Transferencia Bancaria',
+            'pago'    => 'Transferencia',
             'forma_pago'      => 'Pago en una sola exhibicion'
         );
 
@@ -205,7 +207,8 @@ class Cfdi extends Eloquent
 
         try {
             $json = json_encode(Cfdi::setJson($publicId, $invoice));
-            $url = INVOICE_API_TIMBRAR;
+            
+		$url = INVOICE_API_TIMBRAR;
             $data = array('datos' => $json);
             $time = date('c');
             $llave_privada = Invoice::transformarLlave(INVOICE_API_TIMBRAR, 'post', $time);
@@ -214,7 +217,7 @@ class Cfdi extends Eloquent
                     'ignore_errors' => true,
                     'header' => "Content-type: application/x-www-form-urlencoded\r\n" .
                         "llave_privada: " . $llave_privada . "\r\n" .
-                        "llave_prublica: " . INVOICE_API_APIPUBLIC . "\r\n" .
+                        "llave_publica: " . INVOICE_API_APIPUBLIC . "\r\n" .
                         "timestamp: " . $time . "\r\n",
 
                     'method' => 'POST',
