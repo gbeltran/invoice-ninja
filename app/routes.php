@@ -282,7 +282,7 @@ define('NEW_VERSION_AVAILABLE', 'NEW_VERSION_AVAILABLE');
 
 // APISAT
 define('INVOICE_API_TIMBRAR','http://prod.apisat.mx/api/1.0/factura');
-define('INVOICE_API_CANCELAR','http://prod.apisat.mx/api/1.0/factura/{{uuid}}');
+define('INVOICE_API_CANCELAR','http://prod.apisat.mx/api/1.0/factura/{uuid}');
 define('INVOICE_API_APISECRET','key_54ff39b83358b1f596d676e1fbbb1d9f');
 define('INVOICE_API_APIPUBLIC','key_b3ba8cd41b8cbd56098a1a519c76f8bd');
 

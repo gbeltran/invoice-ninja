@@ -230,7 +230,7 @@ class Invoice extends EntityModel
 		$url_parsed=parse_url($url);
 		//Concatena la informacion Metodo, Nombre del host, el Path, el Scheme de la ruta http o https el timestamp y la llave publica separadas por @
 		$data=$metodo.'@'.$url_parsed['host'].$url_parsed['path'].'@'.$url_parsed['scheme'].'@'.$time.'@'.INVOICE_API_APIPUBLIC;
-
+		
 		//Una vez parseada la ruta se procede a realizar el HMAC
 		$hash=hash_hmac('sha256',$data,INVOICE_API_APISECRET);
 
