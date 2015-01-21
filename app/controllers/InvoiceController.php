@@ -374,9 +374,9 @@ class InvoiceController extends \BaseController {
 	{	
                 $action = Input::get('action');
                 $entityType = Input::get('entityType');
-
+		
                 if ($publicId):
-					$invoice=Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)->first();
+		    $invoice=Invoice::where('public_id','=',$publicId)->where('account_id','=',Auth::user()->account_id)->first();
                     $_cfdi = Cfdi::where('invoice_id','=', $invoice->id)->first();
                     $all = Input::all();
                     if((isset($all['_formType'])) && ($all['_formType']!='cfdi'))
@@ -490,7 +490,9 @@ class InvoiceController extends \BaseController {
 			{				
 				Session::flash('message', $message);
 			}
-                        
+			if($publicId==null)
+        			$publicId=$invoice->public_id;
+                
                         $all = Input::all();
                         if(isset($all['_formType']))
                             $this->CFDI($publicId, $all['_formType']); 
@@ -628,9 +630,11 @@ class InvoiceController extends \BaseController {
                 ->firstOrFail();
 
                 $api = CfdiSettings::first();
-                if (sizeof($api)>0){            
+                if (sizeof($api)>0){
+		    try{            
                     $response = Cfdi::sendCfdi($publicId, $invoice);
-					
+		    
+		    }catch(Exception $e){Session::flash('error', $e->getMessage());}
                     if ($response->codigo == 200){
                         $files = $response->archivos;
                         $upd = (object) array('xml'=> $files->xml,'pdf'=> $files->pdf, 'cancel_id' => $response->uuid, 'sale_id'=> $invoice->id);

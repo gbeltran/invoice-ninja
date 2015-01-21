@@ -11,6 +11,7 @@ class Cfdi extends Eloquent
     }
     
     public static function setJson($publicId, $invoice){
+	
         $json = array(
             'factura'  => array(
                 'articulos'         => Cfdi::setItems($publicId),
@@ -18,7 +19,7 @@ class Cfdi extends Eloquent
                 'opciones'       => Cfdi::setOptions(),
                 'totales'        => Cfdi::setTotals($invoice)
         ));
-
+	
         return $json;
     }
 
