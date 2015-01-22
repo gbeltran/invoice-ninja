@@ -224,7 +224,7 @@ class Invoice extends EntityModel
 		return false;
 	}
 
-	public static function transformarLlave($url,$metodo, $time)
+	public static function transformarLlave($url,$metodo, $time, $publica='',$privada='')
 	{
 		//Toma la url como esta descrita el http://sandbox.apisat.mx ej: http://sandbox.apisat.mx/api/1.0/factura/{uuid} tal cual
 		$url_parsed=parse_url($url);

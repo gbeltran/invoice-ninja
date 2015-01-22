@@ -11,16 +11,29 @@ class Cfdi extends Eloquent
     }
     
     public static function setJson($publicId, $invoice){
-	
+
         $json = array(
             'factura'  => array(
                 'articulos'         => Cfdi::setItems($publicId),
                 'receptor'      => Cfdi::setReceptor($invoice),
                 'opciones'       => Cfdi::setOptions(),
                 'totales'        => Cfdi::setTotals($invoice)
-        ));
+        ),
+            'parametros'=> Cfdi::setParametros());
 	
         return $json;
+    }
+
+    public static function setParametros()
+    {
+        $parametros= array('archivos' => Cfdi::setArchivos());
+        return $parametros;
+    }
+
+    public static function setArchivos()
+    {
+        $archivos=array('pdf'=>false);
+        return $archivos;
     }
 
     public static function setItems($publicId)
@@ -130,9 +143,9 @@ class Cfdi extends Eloquent
         if(sizeof($data)>0){
             if($data->flag == 1){
                 return 'Cancelada';
-                
+
             }else{
-                $link = "<a href='{$data->pdf}' target='_blank'>PDF </a> | <a href='{$data->xml}' target='_blank'>XML </a> | <a href='#' onclick='cancelCfdi($id)'>Cancelar </a>";
+                $link = "<a href='/clients/{$id}/pdf' target='_blank'>PDF </a> | <a href='/clients/{id}/xml' target='_blank'>XML </a> | <a href='#' onclick='cancelCfdi($id)'>Cancelar </a>";
             }
             return $link;
         }
@@ -203,13 +216,14 @@ class Cfdi extends Eloquent
         unlink(public_path().'/cfdi.pdf');
         unlink(public_path().'/cfdi.xml');
     }
+
     public static function sendCfdi($publicId, $invoice)
     {
 
         try {
             $json = json_encode(Cfdi::setJson($publicId, $invoice));
-            
-		$url = INVOICE_API_TIMBRAR;
+
+            $url = INVOICE_API_TIMBRAR;
             $data = array('datos' => $json);
             $time = date('c');
             $llave_privada = Invoice::transformarLlave(INVOICE_API_TIMBRAR, 'post', $time);
@@ -237,6 +251,48 @@ class Cfdi extends Eloquent
 
         return $response;
 
+    }
+
+
+    /**
+     * @param $uuid -- folio fiscal
+     * @param $tipo -- Si es XML o PDF
+     * @param $account -- Para obtener en el futuro las llaves
+     * @return string
+     */
+    public static function getFile($uuid, $tipo,$account)
+    {
+        //Fecha en formato ISO 8601
+        $time=date('c');
+
+        //Url para obtener el XML/PDF
+        $url=INVOICE_API_TIMBRAR.'/'.$uuid.'/'.$tipo;
+
+        //Ruta raw para el concatenado en el HMAC
+        if($tipo=='xml')
+            $raw_url=INVOICE_API_XML;
+        else
+            $raw_url=INVOICE_API_PDF;
+
+        //transformacion de la llave privada
+        $llave_privada=Invoice::transformarLlave($raw_url,'get',$time);
+
+        //Parametros del request
+        $parametros = array(
+            'http' => array(
+                'ignore_errors' => true,
+                'header' => "llave_publica: " . INVOICE_API_APIPUBLIC . " \r\n" .
+                    "llave_privada: " . $llave_privada . " \r\n" .
+                    "timestamp: " . $time . " \r\n",
+                'method' => 'GET',
+            ),
+        );
+
+        $context = stream_context_create($parametros);
+
+
+        $result = file_get_contents($url, false, $context);
+        return $result;
     }
     
 

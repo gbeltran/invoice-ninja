@@ -20,11 +20,13 @@ class InvoiceController extends \BaseController {
 		$this->invoiceRepo = $invoiceRepo;
 		$this->clientRepo = $clientRepo;
 		$this->taxRateRepo = $taxRateRepo;
-	}	
+	}
+
+
 
 	public function index()
 	{
-    
+
 		$data = [
 			'title' => trans('texts.invoices'),
 			'entityType'=>ENTITY_INVOICE, 
@@ -656,10 +658,50 @@ class InvoiceController extends \BaseController {
                 }
             }
             else{
-		dd($publicId);
                 InvoiceController::cancelCfdi($publicId);
             }                
         }
+
+		public function requestFile($invoiceId, $tipo)
+		{
+			try {
+				if ($tipo == 'xml' || $tipo == 'pdf') {
+					$invoice = Invoice::find($invoiceId);
+					if (count($invoice)) {
+						$account = Account::where('id', '=', $invoice->account_id)->first();
+						$cfdi = Cfdi::where('invoice_id', '=', $invoice->id)->first();
+						if (count($cfdi) && count($account)) {
+							$response = Cfdi::getFile($cfdi->cancel, $tipo, $account);
+
+							header('Content-Type: application/pdf');
+							header('Content-Disposition: inline; filename=' . $cfdi->cancel . $tipo);
+							header('Content-Transfer-Encoding: binary');
+							header('Expires: 0');
+							header('Cache-Control: must-revalidate');
+							header('Pragma: public');
+							header('Content-Length: ' . strlen($response));
+
+							echo $response;
+
+
+						} else {
+							throw new Exception('No se ha encontrado el cfdi o la cuenta perteneciente', 0);
+						}
+					} else {
+						throw new Exception('Invoice no existe', 0);
+					}
+				} else
+				{
+					throw new Exception('Solo pdf o xml', 0);
+				}
+			}catch(Exception $e)
+			{
+				Session::flash('error', $e->getMessage());
+				Redirect::back();
+			}
+		}
+
+
         
         public function test(){
             

@@ -108,6 +108,11 @@
               })
         }
 
+		function getXml()
+		{
+
+		}
+
     </script>
     
     
