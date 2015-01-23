@@ -21,7 +21,7 @@
     <link href='//fonts.googleapis.com/css?family=Roboto:400,700,900,100' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700' rel='stylesheet' type='text/css'>
     <link href="{{ asset('favicon.ico') }}" rel="icon" type="image/x-icon">
-    <link rel="canonical" href="{{ NINJA_APP_URL }}/{{ Request::path() }}"></link>
+    <link rel="canonical" href="{{ NINJA_APP_URL }}/{{ Request::path() }}">
     
     <script src="{{ asset('built.js') }}?no_cache={{ NINJA_VERSION }}" type="text/javascript"></script>
 

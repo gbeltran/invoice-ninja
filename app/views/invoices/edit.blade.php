@@ -457,7 +457,7 @@
 			            	<input onkeyup="onTaxRateChange()" data-bind="value: name, valueUpdate: 'afterkeydown'" class="form-control" onchange="refreshPDF()"//>			            	
 			            </td>
 			            <td style="width:60px">
-			            	<input onkeyup="onTaxRateChange()" data-bind="value: prettyRate, valueUpdate: 'afterkeydown'" style="text-align: right" class="form-control" onchange="refreshPDF()"//>
+			            	<input onkeyup="onTaxRateChange()" data-bind="value: prettyRate, valueUpdate: 'afterkeydown'" style="text-align: right" class="form-control" onchange="refreshPDF()"/>
 			            </td>
 			        	<td style="width:30px; cursor:pointer" class="hide-border td-icon">
 			        		&nbsp;<i style="width:12px;" data-bind="click: $root.removeTaxRate, visible: actionsVisible() &amp;&amp; !isEmpty()" class="fa fa-minus-circle redlink" title="Remove item"/>
@@ -652,11 +652,6 @@
 		invoice.is_quote = {{ $entityType == ENTITY_QUOTE ? 'true' : 'false' }};
 		invoice.contact = _.findWhere(invoice.client.contacts, {send_invoice: true});
 
-		@if (file_exists($account->getLogoPath()))
-			invoice.image = "{{ HTML::image_data($account->getLogoPath()) }}";
-			invoice.imageWidth = {{ $account->getLogoWidth() }};
-			invoice.imageHeight = {{ $account->getLogoHeight() }};
-		@endif
 
     return invoice;
 	}
@@ -1262,8 +1257,8 @@
 		var self = this;
 		self.public_id = ko.observable(0);
 		self.name = ko.observable('');
-    self.id_number = ko.observable('');
-    self.vat_number = ko.observable('');
+		self.id_number = ko.observable('');
+		self.vat_number = ko.observable('');
 		self.work_phone = ko.observable('');
 		self.custom_value1 = ko.observable('');
 		self.custom_value2 = ko.observable('');

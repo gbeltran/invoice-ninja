@@ -18,7 +18,8 @@
                      <img src="{{ asset('images/totalinvoices.png') }}" class="in-image"/>  
                 </div>
                 <div class="col-md-4">  
-                    <a href="{{ $invoice->pdf }}" target="_blank">PDF</a>
+                    <a href="{{ $invoice->
+                    pdf }}" target="_blank">PDF</a>
                 </div>
                 <div class="col-md-4">  
                     <a href="{{ $invoice->xml }}" target="_blank">XML</a>

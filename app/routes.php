@@ -22,6 +22,7 @@
 //Log::error('test');
 
 // Application setup
+Route::get('pruebas','InvoiceController@test');
 Route::get('setup', 'AppController@showSetup');
 Route::post('setup', 'AppController@doSetup');
 Route::get('install', 'AppController@install');

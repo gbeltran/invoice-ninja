@@ -145,7 +145,7 @@ class Cfdi extends Eloquent
                 return 'Cancelada';
 
             }else{
-                $link = "<a href='/clients/{$id}/pdf' target='_blank'>PDF </a> | <a href='/clients/{id}/xml' target='_blank'>XML </a> | <a href='#' onclick='cancelCfdi($id)'>Cancelar </a>";
+                $link = "<a href='/clients/{$id}/pdf' target='_blank'>PDF </a> | <a href='/clients/{$id}/xml' target='_blank'>XML </a> | <a href='#' onclick='cancelCfdi($id)'>Cancelar </a>";
             }
             return $link;
         }
