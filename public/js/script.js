@@ -629,7 +629,8 @@ function displayAccount(doc, invoice, x, y, layout) {
     account.id_number,
     account.vat_number,
     account.work_email,
-    account.work_phone
+    account.work_phone,
+    account.rfc
   ];
 
   var data2 = [
@@ -667,6 +668,7 @@ function displayClient(doc, invoice, x, y, layout) {
     getClientDisplayName(client),
     client.id_number,
     client.vat_number,
+      client.rfc,client.rfc,
     concatStrings(client.address1, client.address2),
     concatStrings(client.city, client.state, client.postal_code),
     client.country ? client.country.name : false,

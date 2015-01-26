@@ -620,8 +620,8 @@ class InvoiceController extends \BaseController
 				Session::flash('error', trans('texts.apisettingserror'));
 			}
 		} else {
-			$invoice = Invoice::where('public_id','=',$publicId)->where('account_id', '=', Auth::user()->account_id)->first();
-			if(count($invoice))
+			$invoice = Invoice::where('public_id', '=', $publicId)->where('account_id', '=', Auth::user()->account_id)->first();
+			if (count($invoice))
 				InvoiceController::cancelCfdi($invoice->id);
 		}
 		return Redirect::back();
@@ -669,58 +669,73 @@ class InvoiceController extends \BaseController
 		echo '<script src="{{ asset(\'js/pdf_viewer.js\') }}" type="text/javascript"></script>';
 	}
 
-        
-        public function test()
-		{
 
-			$designs= array('invoiceDesings'=>InvoiceDesign::remember(DEFAULT_QUERY_CACHE, 'invoice_designs_cache_' . Auth::user()->maxInvoiceDesignId()));
-			$src2=asset('js/compatibility.js');
+	public function test()
+	{
 
-			$data='{"invoice":{"client":{"public_id":"1","name":"Lala","id_number":"","vat_number":"","work_phone":"","custom_value1":"","custom_value2":"","private_notes":"","address1":"Mira","address2":"200","city":"Tijuana","state":"Baja California","postal_code":"22207","country_id":"484","size_id":"2","industry_id":"3","currency_id":"1","website":"","payment_terms":"7","contacts":[{"public_id":"1","first_name":"Lala","last_name":"Lolo","email":"cdfi@yopmail.com","phone":"1234567890","send_invoice":true,"invitation_link":"/view/vc95lNTHmwSvdXTZ7HarEbjLzuCpu4u5","account_id":"7","user_id":"7","client_id":"6","created_at":"2015-01-21 19:07:45","updated_at":"2015-01-22 20:44:56","deleted_at":null,"is_primary":"1","last_login":null}],"mapping":{"contacts":{}},"user_id":"7","account_id":"7","created_at":"2015-01-21 19:07:45","updated_at":"2015-01-22 20:44:56","deleted_at":null,"balance":"12500.00","paid_to_date":null,"last_login":null,"is_deleted":"0","rfc":"AAD990814BP7","suburb":"Laracast","country":{"id":"484","name":"Mexico"}},"account":{"id":"7","timezone_id":null,"date_format_id":null,"datetime_format_id":null,"currency_id":null,"created_at":"2015-01-21 18:58:32","updated_at":"2015-01-22 21:32:33","deleted_at":null,"name":null,"ip":"187.184.159.189","account_key":"Z6655V2nQDHozlpAxpxVWQEZxPo3h70t","last_login":"2015-01-22 21:32:33","address1":null,"address2":null,"city":null,"state":null,"postal_code":null,"country_id":null,"invoice_terms":null,"email_footer":null,"industry_id":null,"size_id":null,"invoice_taxes":"1","invoice_item_taxes":"0","invoice_design_id":"1","work_phone":null,"work_email":null,"language_id":"1","pro_plan_paid":null,"custom_label1":null,"custom_value1":null,"custom_label2":null,"custom_value2":null,"custom_client_label1":null,"custom_client_label2":null,"fill_products":"1","update_products":"1","primary_color":null,"secondary_color":null,"hide_quantity":"0","hide_paid_to_date":"0","custom_invoice_label1":null,"custom_invoice_label2":null,"custom_invoice_taxes1":null,"custom_invoice_taxes2":null,"vat_number":null,"invoice_design":null,"invoice_number_prefix":null,"invoice_number_counter":"24","quote_number_prefix":null,"quote_number_counter":"1","share_counter":"1","id_number":null,"rfc":null,"suburb":null,"country":null},"id":"","discount":"","is_amount_discount":"0","frequency_id":"1","terms":"","set_default_terms":false,"public_notes":"","po_number":"","invoice_date":"Jan 21, 2015","invoice_number":"0016","due_date":"Jan 28, 2015","start_date":"","end_date":"","tax_name":"","tax_rate":0,"is_recurring":false,"invoice_status_id":"1","invoice_items":[{"product_key":"pokebola","notes":"pokebola","cost":"100.00","qty":"2.00","tax_name":null,"tax_rate":0,"account_id":"7","user_id":"7","invoice_id":"30","product_id":"11","created_at":"2015-01-21 22:58:30","updated_at":"2015-01-21 22:58:30","deleted_at":null,"public_id":"18"},{"product_key":"","notes":"","cost":"","qty":0,"tax_name":"","tax_rate":0,"actionsVisible":false,"_tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"prettyQty":"","prettyCost":"","mapping":{"tax":{}},"wrapped_notes":""}],"amount":"200.00","balance":"200.00","invoice_design_id":"1","custom_value1":"0.00","custom_value2":"0.00","custom_taxes1":"0","custom_taxes2":"0","mapping":{"client":{},"invoice_items":{},"tax":{}},"_tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"wrapped_terms":"","wrapped_notes":"","client_id":"6","user_id":"7","account_id":"7","created_at":"2015-01-21 22:58:30","updated_at":"2015-01-21 22:58:30","deleted_at":null,"is_deleted":"0","last_sent_date":null,"recurring_invoice_id":null,"public_id":"14","is_quote":"0","quote_id":null,"quote_invoice_id":null,"is_pro":true,"invitations":[{"account_id":"7","user_id":"7","contact_id":"6","invoice_id":"30","invitation_key":"vc95lNTHmwSvdXTZ7HarEbjLzuCpu4u5","created_at":"2015-01-21 22:58:30","updated_at":"2015-01-21 22:58:30","deleted_at":null,"transaction_reference":null,"sent_date":"0000-00-00 00:00:00","viewed_date":"0000-00-00 00:00:00","public_id":"14"}]},"tax_rates":[{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},{"public_id":"","rate":0,"name":null,"is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""}],"invoice_taxes":true,"invoice_item_taxes":false,"mapping":{"invoice":{},"tax_rates":{}},"clientLinkText":"Edit client details"}';
-			$src = asset('js/pdf_viewer.js');
-			echo '<script src="' . $src . '" type="text/javascript"></script><script src="'.$src2.'" type="text/javascript"></script>';
-			echo "<script>function trackUrl(url) {}
-var model=".$data.";
-var invoiceDesigns=".$designs. ".toString;
+		$account=Account::where('id','=',Auth::user()->account_id)->first();
+		$data=  '{"invoice":{"client":{"public_id":"1","name":"Lala","id_number":"","vat_number":"","work_phone":"","custom_value1":"","custom_value2":"","private_notes":"","address1":"Mira","address2":"200","city":"Tijuana","state":"Baja California","postal_code":"22207","country_id":"484","size_id":"2","industry_id":"3","currency_id":"1","website":"","payment_terms":"7","contacts":[{"public_id":"1","first_name":"Lala","last_name":"Lolo","email":"cdfi@yopmail.com","phone":"1234567890","send_invoice":true,"account_id":"7","user_id":"7","client_id":"6","created_at":"2015-01-21 19:07:45","updated_at":"2015-01-22 20:44:56","deleted_at":null,"is_primary":"1","last_login":null}],"mapping":{"contacts":{}},"country":{"id":"484","name":"Mexico"},"user_id":"7","account_id":"7","created_at":"2015-01-21 19:07:45","updated_at":"2015-01-22 20:44:56","deleted_at":null,"balance":"12500.00","paid_to_date":null,"last_login":null,"is_deleted":"0","rfc":"AAD990814BP7","suburb":"Laracast"},"account":{"id":"7","timezone_id":"6","date_format_id":"7","datetime_format_id":"7","currency_id":"1","created_at":"2015-01-21 18:58:32","updated_at":"2015-01-26 20:53:36","deleted_at":null,"name":"Luis Josue","ip":"187.184.159.189","account_key":"Z6655V2nQDHozlpAxpxVWQEZxPo3h70t","last_login":"2015-01-23 21:59:48","address1":"Casa Blacan","address2":"20500","city":"Tijuana","state":"Baja California","postal_code":"22207","country_id":"484","invoice_terms":null,"email_footer":null,"industry_id":"12","size_id":null,"invoice_taxes":"1","invoice_item_taxes":"0","invoice_design_id":"1","work_phone":"6642182508","work_email":"luis@solucioname.net","language_id":"7","pro_plan_paid":null,"custom_label1":null,"custom_value1":null,"custom_label2":null,"custom_value2":null,"custom_client_label1":null,"custom_client_label2":null,"fill_products":"1","update_products":"1","primary_color":null,"secondary_color":null,"hide_quantity":"0","hide_paid_to_date":"0","custom_invoice_label1":null,"custom_invoice_label2":null,"custom_invoice_taxes1":null,"custom_invoice_taxes2":null,"vat_number":"","invoice_design":null,"invoice_number_prefix":null,"invoice_number_counter":"24","quote_number_prefix":null,"quote_number_counter":"1","share_counter":"1","id_number":"","rfc":"AAD990814BP7","suburb":"Los Lobos"},"id":"","discount":"1","is_amount_discount":"0","frequency_id":"1","terms":"213","set_default_terms":true,"public_notes":"1231","po_number":"0024","invoice_date":"Mon January 26, 2015","invoice_number":"0024","due_date":"Mon February 2, 2015","start_date":"Mon January 26, 2015","end_date":"","tax_name":"IVA","tax_rate":"16","is_recurring":false,"invoice_status_id":0,"invoice_items":[{"product_key":"pokebola","notes":"pokebola","cost":"100.00","qty":"2","tax_name":"IVA","tax_rate":"16","actionsVisible":false,"_tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"prettyQty":2,"prettyCost":"100.00","mapping":{"tax":{}},"wrapped_notes":"pokebola"},{"product_key":"","notes":"","cost":0,"qty":0,"tax_name":"","tax_rate":0,"actionsVisible":false,"_tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"prettyQty":"","prettyCost":"","mapping":{"tax":{}},"wrapped_notes":""}],"amount":0,"balance":0,"invoice_design_id":"1","custom_value1":"","custom_value2":"","custom_taxes1":false,"custom_taxes2":false,"mapping":{"client":{},"invoice_items":{},"tax":{}},"_tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"wrapped_terms":"213","wrapped_notes":"1231"},"tax_rates":[{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""}],"invoice_taxes":true,"invoice_item_taxes":true,"mapping":{"invoice":{},"tax_rates":{}},"clientLinkText":"Editar detalles del cliente","taxBackup":false}';
+		if(file_exists($account->getLogoPath()))
+			$exist=true;
+		else
+			$exist=false;
 
-function createInvoiceModel() {
+		$labels=$account->getInvoiceLabels();
+		echo '<script src="'.asset('js/jquery.1.9.1.min.js').'"></script><script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script><script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js"></script><script src="'.asset('js/jspdf.source.js').'"></script><script src="'.asset('built.js').'"></script>
+		<script src="' . asset('js/pdf_viewer.js') . '" type="text/javascript"></script><script src="' . asset('js/compatibility.js') . '" type="text/javascript"></script><script src="' .  asset('js/makePdf.js') . '"></script>';
+		$logo1=HTML::image_data("images/report_logo1.jpg");
+		$logo2=HTML::image_data('images/report_logo2.jpg');
+		$logo3= HTML::image_data('images/report_logo3.jpg');
+		echo '<script>
+				var currencies = '.Currency::remember(120)->get().';
+				  var currencyMap = {};
+				  for (var i=0; i<currencies.length; i++) {
+					var currency = currencies[i];
+					currencyMap[currency.id] = currency;
+				  }
 
-		var invoice = model.invoice;
-		invoice.is_pro = " . Auth::user()->isPro() . " ? 'true' : 'false' ;
-		invoice.is_quote = false ;
-    return invoice;
+
+			  window.logoImages = {};
+
+			  logoImages.imageLogo1 = "'.$logo1.'";
+			  logoImages.imageLogoWidth1 =120;
+			  logoImages.imageLogoHeight1 = 40;
+
+			  logoImages.imageLogo2 = "'.$logo2.'";
+			  logoImages.imageLogoWidth2 =325/2;
+			  logoImages.imageLogoHeight2 = 81/2;
+
+			  logoImages.imageLogo3 = "'.$logo3.'";
+			  logoImages.imageLogoWidth3 =325/2;
+			  logoImages.imageLogoHeight3 = 81/2;
+			  var exist="'.json_encode($exist).'";
+			  exist=exist==="true";
+
+
+
+			  var NINJA = NINJA || {};
+			  NINJA.primaryColor = "'.$account->primary_color.'";
+			  NINJA.secondaryColor = "'. $account->secondary_color.'";
+
+
+
+			  if (exist)
+				  if (window.invoice) {
+					invoice.image = "'.HTML::image_data($account->getLogoPath()).'";
+					invoice.imageWidth = "'.$account->getLogoWidth().'";
+					invoice.imageHeight = "'.$account->getLogoHeight().'";
+				  }
+
+				  function formatMoney(value, currency_id, hide_symbol) {
+    				value = NINJA.parseFloat(value);
+				if (!currency_id) currency_id = '. Session::get(SESSION_CURRENCY, DEFAULT_CURRENCY).';
+			var currency = currencyMap[currency_id];
+			return accounting.formatMoney(value, hide_symbol ? "" : currency.symbol, currency.precision, currency.thousand_separator, currency.decimal_separator);
+			}
+		  </script>';
+
+			echo '<script>
+			var invoiceLabels ='.json_encode($labels).';
+			savePdf(' . $data . ');</script>';
 	}
-
-	function getPDFString() {
-		var invoice = createInvoiceModel();
-		var design  = getDesignJavascript();
-		if (!design) return;
-		var doc = generatePDF(invoice, design);
-		if (!doc) return;
-		return doc.output('datauristring');
-	}
-
-	function getDesignJavascript(id) {
-		var id = id;
-		if (id == '-1') {
-			showMoreDesigns();
-			model.invoice().invoice_design_id(1);
-			return invoiceDesigns[0].javascript;
-		} else {
-			return invoiceDesigns[id-1].javascript;
-		}
-	}
-function onDownloadClick() {
-			trackUrl('/download_pdf');
-			var invoice = createInvoiceModel(".$data.");
-			var design  = getDesignJavascript(1);
-			if (!design) return;
-			var doc = generatePDF(invoice, design, true);
-			doc.save('Invoice-' + $('#invoice_number').val() + '.pdf');
-		}
-		onDownloadClick();
-		</script>";
-
-
-		}
 }

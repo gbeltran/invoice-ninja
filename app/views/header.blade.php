@@ -25,6 +25,7 @@
 
 @stop
 
+
 @section('body')
 
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
