@@ -29,6 +29,12 @@ return array(
    // invoice
    'invoice' => 'Factura de venta', //Factura de Venta-Colombia
    'client' => 'Cliente',
+   'client_name'=>'Razon Social',
+   'client_id'=>'Id',
+   'client_address'=>'Direccion',
+   'client_country'=>'Residencia',
+   'client_email'=>'Correo',
+   'rfc'=>'RFC',
    'invoice_date' => 'Fecha de factura',
    'due_date' => 'Fecha de pago',
    'invoice_number' => 'Número de Factura',

@@ -21,10 +21,10 @@ function style(invoice)
         footerLeft: 420,
         tablePadding: 12,
         tableTop: 250,
-        descriptionLeft: 162,
-        unitCostRight: 410,
-        qtyRight: 480,
-        taxRight: 480,
+        descriptionLeft: 122,
+        unitCostRight: 480,
+        qtyRight: 360,
+        taxRight: 400,
         lineTotalRight: 550
     };
 
@@ -86,9 +86,9 @@ function style(invoice)
 
     SetPdfColor('Black',doc); //set black color
     doc.setFontSize(9);
-
+    invoice=calculateAmounts(invoice);
     var invoiceHeight = displayInvoice(doc, invoice, 50, 170, layout);
-    var clientHeight = displayClient(doc, invoice, 220, 170, layout);
+    var clientHeight = displayClient(doc, invoice, 280, 170, layout);
     var detailsHeight = Math.max(invoiceHeight, clientHeight);
     layout.tableTop = Math.max(layout.tableTop, layout.headerTop + detailsHeight + (3 * layout.rowHeight));
 

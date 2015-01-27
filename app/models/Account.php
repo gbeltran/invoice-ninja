@@ -206,6 +206,12 @@ class Account extends Eloquent
   		'quote_number',
   		'total',
   		'invoice_issued_to',
+			'rfc',
+			'client_name',
+			'client_id',
+			'client_address',
+			'client_country',
+			'client_email'
 		];
 
 		foreach ($fields as $field)

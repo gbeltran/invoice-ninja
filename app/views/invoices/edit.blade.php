@@ -20,7 +20,7 @@
 		'client' => 'required',
 		'email' => 'required',
 		'product_key' => 'max:20'
-	)) }}	
+	))->id('submit-form') }}
 
 	<input type="submit" style="display:none" name="submitButton" id="submitButton">
 
@@ -706,6 +706,7 @@
             $form = $('form.invoices-form');
             $('input[name="_formType"]').remove();
             $form.append($("<input type=\"hidden\" class=\"form-control\" name=\"_formType\"/>").val("cfdi"));
+			var invoice=createInvoiceModel();
             onSaveClick();
         }
         
@@ -1252,6 +1253,8 @@
   		refreshPDF();
   	}	
 	}
+
+
 
 	function ClientModel(data) {
 		var self = this;

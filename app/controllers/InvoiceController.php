@@ -363,7 +363,6 @@ class InvoiceController extends \BaseController
 	{
 		$action = Input::get('action');
 		$entityType = Input::get('entityType');
-
 		if ($publicId):
 			$invoice = Invoice::where('public_id', '=', $publicId)->where('account_id', '=', Auth::user()->account_id)->first();
 			$_cfdi = Cfdi::where('invoice_id', '=', $invoice->id)->first();
@@ -589,6 +588,7 @@ class InvoiceController extends \BaseController
 	public function CFDI($publicId, $type)
 	{
 		if ($type == 'cfdi') {
+
 			$invoice = Invoice::scope($publicId)->where('account_id', '=', Auth::user()->account_id)
 				->withTrashed()
 				->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
@@ -683,9 +683,7 @@ class InvoiceController extends \BaseController
 		$labels=$account->getInvoiceLabels();
 		echo '<script src="'.asset('js/jquery.1.9.1.min.js').'"></script><script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script><script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js"></script><script src="'.asset('js/jspdf.source.js').'"></script><script src="'.asset('built.js').'"></script>
 		<script src="' . asset('js/pdf_viewer.js') . '" type="text/javascript"></script><script src="' . asset('js/compatibility.js') . '" type="text/javascript"></script><script src="' .  asset('js/makePdf.js') . '"></script>';
-		$logo1=HTML::image_data("images/report_logo1.jpg");
-		$logo2=HTML::image_data('images/report_logo2.jpg');
-		$logo3= HTML::image_data('images/report_logo3.jpg');
+
 		echo '<script>
 				var currencies = '.Currency::remember(120)->get().';
 				  var currencyMap = {};
@@ -697,15 +695,15 @@ class InvoiceController extends \BaseController
 
 			  window.logoImages = {};
 
-			  logoImages.imageLogo1 = "'.$logo1.'";
+			  logoImages.imageLogo1 = "'.HTML::image_data("images/report_logo1.jpg").'";
 			  logoImages.imageLogoWidth1 =120;
 			  logoImages.imageLogoHeight1 = 40;
 
-			  logoImages.imageLogo2 = "'.$logo2.'";
+			  logoImages.imageLogo2 = "'.HTML::image_data('images/report_logo2.jpg').'";
 			  logoImages.imageLogoWidth2 =325/2;
 			  logoImages.imageLogoHeight2 = 81/2;
 
-			  logoImages.imageLogo3 = "'.$logo3.'";
+			  logoImages.imageLogo3 = "'.HTML::image_data('images/report_logo3.jpg').'";
 			  logoImages.imageLogoWidth3 =325/2;
 			  logoImages.imageLogoHeight3 = 81/2;
 			  var exist="'.json_encode($exist).'";
@@ -716,6 +714,12 @@ class InvoiceController extends \BaseController
 			  var NINJA = NINJA || {};
 			  NINJA.primaryColor = "'.$account->primary_color.'";
 			  NINJA.secondaryColor = "'. $account->secondary_color.'";
+
+			  NINJA.parseFloat = function(str) {
+				if (!str) return \'\';
+				str = (str+\'\').replace(/[^0-9/./-]/g, \'\');
+				return window.parseFloat(str);
+			  }
 
 
 

@@ -79,11 +79,12 @@
   var needsRefresh = false;
 
   function refreshPDF() {
-    if ({{ Auth::check() && Auth::user()->force_pdfjs ? 'false' : 'true' }} && (isFirefox || (isChrome && !isChromium))) {
+    if ( {{ Auth::check() && Auth::user()->force_pdfjs ? 'false' : 'true' }} && (isFirefox || (isChrome && !isChromium)))
+    {
       var string = getPDFString();
       if (!string) return;
       $('#theFrame').attr('src', string).show();    
-    } else {      
+    } else {
       if (isRefreshing) {
         needsRefresh = true;
         return;

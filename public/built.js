@@ -31620,17 +31620,12 @@ function displayClient(doc, invoice, x, y, layout) {
   if (!client) {
     return;
   }
-  var data = [
-    getClientDisplayName(client),
-    client.id_number,
-    client.vat_number,
-    concatStrings(client.address1, client.address2),
-    concatStrings(client.city, client.state, client.postal_code),
-    client.country ? client.country.name : false,
-    invoice.contact && getClientDisplayName(client) != invoice.contact.email ? invoice.contact.email : false,
-    invoice.client.custom_value1 ? invoice.account['custom_client_label1'] + ' ' + invoice.client.custom_value1 : false,
-    invoice.client.custom_value2 ? invoice.account['custom_client_label2'] + ' ' + invoice.client.custom_value2 : false,
-  ];
+  var data = getClientsDetails(invoice);//[
+
+    //
+    //invoice.client.custom_value1 ? invoice.account['custom_client_label1'] + ' ' + invoice.client.custom_value1 : false,
+    //invoice.client.custom_value2 ? invoice.account['custom_client_label2'] + ' ' + invoice.client.custom_value2 : false,
+  //];
   return displayGrid(doc, invoice, data, x, y, layout, {hasheader:true});
 }
 
@@ -31646,6 +31641,19 @@ function displayInvoice(doc, invoice, x, y, layout, rightAlignX) {
   };
 
   return displayGrid(doc, invoice, data, x, y, layout, options);
+}
+
+function getClientsDetails(invoice) {
+	var client = invoice.client;
+	return [
+		{'clien_name': getClientDisplayName(client)},
+		{'client_id': client.id_number},
+		{'rfc': client.rfc},
+		{'client_address': concatStrings(client.address1, client.address2, client.city, client.state, client.postal_code)},
+		{'client_country': concatStrings(client.country ? client.country.name : false)},
+		{'client_email':invoice.contact && getClientDisplayName(client) != invoice.contact.email ? invoice.contact.email : ''},
+
+	];
 }
 
 function getInvoiceDetails(invoice) {

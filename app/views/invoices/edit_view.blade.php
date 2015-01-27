@@ -20,7 +20,7 @@
 		'client' => 'required',
 		'email' => 'required',
 		'product_key' => 'max:20'
-	)) }}	
+	))->id('submit-form') }}
 
 	<input type="submit" style="display:none" name="submitButton" id="submitButton">
 
@@ -116,7 +116,7 @@
 
 	<p>&nbsp;</p>
 
-	{{ Former::hidden('data')->data_bind("value: ko.mapping.toJSON(model)") }}	
+	{{ Former::hidden('data')->data_bind("value: ko.mapping.toJSON(model)")->id('data-model') }}
 
 	<div class="table-responsive">
 	<table class="table invoice-table" style="margin-bottom: 0px !important">

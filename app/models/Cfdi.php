@@ -32,7 +32,7 @@ class Cfdi extends Eloquent
 
     public static function setArchivos()
     {
-        $archivos=array('pdf'=>false);
+        $archivos=array('pdf'=>true);
         return $archivos;
     }
 

@@ -29,6 +29,12 @@ return array(
   // invoice
   'invoice' => 'Invoice',
   'client' => 'Client',
+    'client_name'=>'Corporate',
+    'client_id'=>'Id',
+    'client_address'=>'Address',
+    'client_country'=>'Residence',
+    'client_email'=>'Email',
+    'rfc'=>'RFC',
   'invoice_date' => 'Invoice Date',
   'due_date' => 'Due Date',
   'invoice_number' => 'Invoice Number',
