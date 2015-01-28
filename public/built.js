@@ -31616,17 +31616,19 @@ function displayAccount(doc, invoice, x, y, layout) {
 
 
 function displayClient(doc, invoice, x, y, layout) {
-  var client = invoice.client;
-  if (!client) {
-    return;
-  }
-  var data = getClientsDetails(invoice);//[
 
-    //
-    //invoice.client.custom_value1 ? invoice.account['custom_client_label1'] + ' ' + invoice.client.custom_value1 : false,
-    //invoice.client.custom_value2 ? invoice.account['custom_client_label2'] + ' ' + invoice.client.custom_value2 : false,
-  //];
-  return displayGrid(doc, invoice, data, x, y, layout, {hasheader:true});
+	var client = invoice.client;
+	if (!client) {
+		return;
+	}
+
+	var data = getClientsDetails(invoice);//[
+
+	//
+	//invoice.client.custom_value1 ? invoice.account['custom_client_label1'] + ' ' + invoice.client.custom_value1 : false,
+	//invoice.client.custom_value2 ? invoice.account['custom_client_label2'] + ' ' + invoice.client.custom_value2 : false,
+	//];
+	return displayGrid(doc, invoice, data, x, y, layout, {hasheader: true});
 }
 
 function displayInvoice(doc, invoice, x, y, layout, rightAlignX) {
@@ -31637,7 +31639,7 @@ function displayInvoice(doc, invoice, x, y, layout, rightAlignX) {
   var data = getInvoiceDetails(invoice);
   var options = {
     hasheader: true,
-    rightAlignX: rightAlignX,
+    rightAlignX: rightAlignX
   };
 
   return displayGrid(doc, invoice, data, x, y, layout, options);
@@ -31646,7 +31648,7 @@ function displayInvoice(doc, invoice, x, y, layout, rightAlignX) {
 function getClientsDetails(invoice) {
 	var client = invoice.client;
 	return [
-		{'clien_name': getClientDisplayName(client)},
+		{'client_name': getClientDisplayName(client)},
 		{'client_id': client.id_number},
 		{'rfc': client.rfc},
 		{'client_address': concatStrings(client.address1, client.address2, client.city, client.state, client.postal_code)},
@@ -31821,6 +31823,24 @@ function displayGrid(doc, invoice, data, x, y, layout, options)  {
   }
 
   return numLines * layout.rowHeight;
+}
+
+function displayRfc(doc, layout, invoice, y)
+{
+	var origY=y;
+
+	if(invoice.account.rfc)
+	{
+		doc.text(layout.marginLeft,origY,'RFC: '+invoice.account.rfc);
+		if(invoice.account.uuid)
+		{
+			doc.text(layout.marginLeft,origY,'Folio Fiscal:');
+		}
+		origY += 5 + (doc.splitTextToSize(invoice.account.rfc, 300).length * doc.internal.getFontSize());
+	}
+
+	return origY;
+
 }
 
 function displayNotesAndTerms(doc, layout, invoice, y)
