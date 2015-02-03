@@ -150,6 +150,10 @@ Route::group(array('before' => 'auth'), function()
 });
 
 
+
+Route::get('/create/cfdi/pdf',array('as'=>'createPdf','uses'=>'InvoiceController@makePdf'));
+
+
 Route::get('/clients/{id}/{tipo}','InvoiceController@requestFile')->before('auth');
 
 // Route group for API

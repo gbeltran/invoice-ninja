@@ -31631,6 +31631,46 @@ function displayClient(doc, invoice, x, y, layout) {
 	return displayGrid(doc, invoice, data, x, y, layout, {hasheader: true});
 }
 
+function displayFacture(doc, invoice, x, y, layout, rightAlignX) {
+	if (!invoice) {
+		return;
+	}
+	//Something like headers
+	var data = getFactureDetails(invoice);
+	var options = {
+		hasheader: true,
+		rightAlignX: rightAlignX
+	};
+
+	return displayGrid(doc, invoice, data, x, y, layout, options);
+}
+
+function displayFacture(doc, invoice, x, y, layout, rightAlignX) {
+	if (!invoice) {
+		return;
+	}
+	//Something like headers
+	var data = getFactureDetails(invoice);
+	var options = {
+		hasheader: true,
+		rightAlignX: rightAlignX
+	};
+
+	return displayGrid(doc, invoice, data, x, y, layout, options);
+}
+
+function getFactureDetails(response)
+{
+	var respuesta=response.sat;
+	return[
+		{'rfc_emisor': respuesta.rfc},
+		{'razon_social': respuesta.razon_social},
+		{'fecha_certificacion': respuesta.fecha_certificacion},
+		{'folio_fiscal': response.uuid},
+		{'numero_sat':respuesta.nocert_sat},
+		{'numero_certificado':respuesta.nocert_emisor}];
+}
+
 function displayInvoice(doc, invoice, x, y, layout, rightAlignX) {
   if (!invoice) {
     return;
@@ -31782,7 +31822,7 @@ function displayGrid(doc, invoice, data, x, y, layout, options)  {
       if (options.rightAlignX) {
         marginLeft = options.rightAlignX - (doc.getStringUnitWidth(value) * doc.internal.getFontSize());
       } else {
-        marginLeft = x + 80;
+        marginLeft = x + 88;
       }
       doc.text(marginLeft, y, value);
 

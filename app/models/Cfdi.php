@@ -244,6 +244,8 @@ class Cfdi extends Eloquent
             $result = file_get_contents($url, false, $context);
             $response = json_decode($result);
 
+
+
         } catch (Exception $exc) {
             $response = $exc->getTraceAsString();
         }

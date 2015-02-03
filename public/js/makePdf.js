@@ -1,4 +1,4 @@
-function bold(invoice)
+function bold(invoice, response)
 {
     var GlobalY=0;//Y position of line at current page
 
@@ -142,24 +142,37 @@ function bold(invoice)
     var z=GlobalY;
     z=z+30;
 
-
-
-    doc.setFontSize('8');
-    SetPdfColor('Black',doc);
-
-    z=displayRfc(doc, layout,invoice,z);
-
-    var clientHeight = displayClient(doc, invoice, layout.marginLeft, z, layout);
-    layout.tableTop += Math.max(0, clientHeight - 75);
+    //publish left side information
     marginLeft2=395;
 
-
-
-    //publish left side information
     SetPdfColor('White',doc);
     doc.setFontSize('8');
     var detailsHeight = displayInvoice(doc, invoice, marginLeft2, z-25, layout) + 75;
     layout.tableTop = Math.max(layout.tableTop, layout.headerTop + detailsHeight + (2 * layout.tablePadding));
+
+    //Encabezado
+    SetPdfColor('Black',doc);
+    doc.setFontSize('10');
+    doc.setFontType('bold');
+    doc.text(50, z, "Datos del emisor");
+    z=z+15;
+
+    //Dato del RFC
+    doc.setFontType('normal');
+    doc.setFontSize('8');
+    displayRfc(doc, layout,invoice,z);
+    z=z+15;
+    //Enccabezado Receptor
+    doc.setFontSize('10');
+    doc.setFontType('bold');
+    doc.text(50, z, "Datos del receptor");
+    z=z+15;
+
+    //Datos del cliente
+    doc.setFontSize('8');
+    SetPdfColor('Black',doc);
+    var clientHeight = displayClient(doc, invoice, layout.marginLeft, z, layout);
+    layout.tableTop += Math.max(0, clientHeight - 75);
 
     y=z+60;
     x = GlobalY + 100;
@@ -191,12 +204,14 @@ function bold(invoice)
     SetPdfColor('SomeGreen', doc, 'secondary');
     doc.text(AmountX, y, AmountText);
 
+    //var totalf=formatTotal(invoice.balance_amount);
+
     return doc;
 
 
 }
 
-function plain(invoice)
+function plain(invoice, response)
 {
 
     var client = invoice.client;
@@ -226,7 +241,6 @@ function plain(invoice)
     if (invoice.has_taxes)
     {
         layout.descriptionLeft -= 20;
-        layout.unitCostRight -= 40;
         layout.qtyRight -= 40;
     }
 
@@ -310,9 +324,13 @@ function plain(invoice)
         doc.setFontType('normal');
         doc.text(layout.marginLeft, 790, 'Created by InvoiceNinja.com');
     }
+
+    //var totalf=formatTotal(invoice.balance_amount);
+
+    return doc;
 }
 
-function modern(invoice)
+function modern(invoice,response)
 {
     var client = invoice.client;
     var account = invoice.account;
@@ -331,9 +349,9 @@ function modern(invoice)
         tablePadding: 12,
         tableTop: 250,
         descriptionLeft: 162,
-        unitCostRight: 410,
-        qtyRight: 480,
-        taxRight: 480,
+        unitCostRight: 500,
+        qtyRight: 390,
+        taxRight: 390,
         lineTotalRight: 550
     };
 
@@ -424,12 +442,14 @@ function modern(invoice)
     }
 
     doc.setFontSize(10);
+
     var marginLeft = 340;
     displayAccount(doc, invoice, marginLeft, 780, layout);
 
 
     SetPdfColor('White',doc);
     doc.setFontSize('8');
+
     var detailsHeight = displayInvoice(doc, invoice, layout.headerRight, layout.accountTop-10, layout);
     layout.headerTop = Math.max(layout.headerTop, detailsHeight + 50);
     layout.tableTop = Math.max(layout.tableTop, detailsHeight + 150);
@@ -437,8 +457,8 @@ function modern(invoice)
     SetPdfColor('Black',doc); //set black color
     doc.setFontSize(7);
     doc.setFontType('normal');
+    displayFacture(doc,response,50,layout.headerTop, layout);
     displayClient(doc, invoice, layout.headerRight, layout.headerTop, layout);
-
 
 
     SetPdfColor('White',doc);
@@ -499,6 +519,20 @@ function modern(invoice)
     var amountX = layout.lineTotalRight - (doc.getStringUnitWidth(amount) * doc.internal.getFontSize());
     doc.text(amountX, y+2, amount);
 
+    SetPdfColor('Black', doc);
+    doc.setFontSize(7);
+    doc.text(50,y+20,'Sello Digital del CFDI');
+    doc.text(50,y+25,response.sat.sello);
+
+    doc.text(50,y+40,'Sello del SAT');
+    doc.text(50,y+45,response.sat.sello_sat);
+
+    doc.text(250,y+60,'Cadena Original del complemento de certificación digital del SAT');
+    doc.text(250,65+y,'||1.0|'+response.uuid+'|'+response.sat.fecha_certificacion+'|'+response.sat.sello+'|'+response.sat.nocert_sat+'||');
+
+
+    //var totalf=formatTotal(invoice.balance_amount);
+
     return doc;
 }
 function clean(invoice)
@@ -522,7 +556,7 @@ function clean(invoice)
         tableTop: 250,
         descriptionLeft: 122,
         unitCostRight: 480,
-        qtyRight: 360,
+        qtyRight: 330,
         taxRight: 400,
         lineTotalRight: 550
     };
@@ -632,32 +666,63 @@ function clean(invoice)
     var AmountX = layout.lineTotalRight - (doc.getStringUnitWidth(AmountText) * doc.internal.getFontSize());
     doc.text(AmountX, y, AmountText);
 
+    //var totalf=formatTotal(invoice.balance_amount);
+    //(imageData, format, x, y, w, h)
+    //var imgData=generateQr(totalf);
+
+
     return doc;
 }
 
-function savePdf(invoice)
+function savePdf(invoice, response)
 {
-    invoice=invoice.invoice;
+
     var doc;
+    response=JSON.parse(response);
 
     switch(invoice.invoice_design_id)
     {
         case "1":
-            doc=clean(invoice);
+            doc=clean(invoice, response);
             break;
         case "2":
-            doc=bold(invoice);
+            doc=bold(invoice,response);
             break;
         case "3":
-            doc=modern(invoice);
+            doc=modern(invoice,response);
             break;
         case "4":
-            doc=plain(invoice);
+            doc=plain(invoice,response);
             break;
         default:
-            doc=clean(invoice);
+            doc=clean(invoice,response);
             break;
     }
 
-    doc.save('Invoice-' + $('#invoice_number').val() + '.pdf');
+    //doc.output('dataurl');
+    doc.save();
+}
+
+function formatTotal(total)
+{
+    var enteros='';
+    var decimales='';
+    var arr=total.split('.');
+
+    for(i=0;i<10-arr[0].lenght();i++)
+    {
+        enteros+='0';
+    }
+
+    enteros+=$arr[0];
+
+    decimales+=$arr[1];
+    for(var i=0;i<6-arr[1].lenght();i++)
+    {
+        decimales+='0';
+    }
+
+    var value=enteros+'.'+decimales;
+
+    return value;
 }

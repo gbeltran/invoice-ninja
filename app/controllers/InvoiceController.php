@@ -372,6 +372,7 @@ class InvoiceController extends \BaseController
 
 			if (sizeof($_cfdi) > 0) {
 				$url = "{$entityType}s/" . $publicId . '/edit';
+
 				return Redirect::to($url);
 			}
 		endif;
@@ -461,12 +462,23 @@ class InvoiceController extends \BaseController
 				$publicId = $invoice->public_id;
 
 			$all = Input::all();
-			if (isset($all['_formType']))
-				$this->CFDI($publicId, $all['_formType']);
+			if (isset($all['_formType'])) {
+				$datos = $this->CFDI($publicId, $all['_formType']);
 
-			$url = "{$entityType}s/" . $invoice->public_id . '/edit';
-			return Redirect::to($url);
-			return;
+				if (isset($datos['response'])) {
+
+					return Redirect::to('/create/cfdi/pdf')->with('data',$datos['data'])->with('response',$datos['response']);
+				} else {
+					$url = "{$entityType}s/" . $invoice->public_id . '/edit';
+					return Redirect::to($url);
+				}
+			}else
+			{
+				$url = "{$entityType}s/" . $invoice->public_id . '/edit';
+				return Redirect::to($url);
+				return;
+			}
+
 		}
 	}
 
@@ -594,37 +606,36 @@ class InvoiceController extends \BaseController
 				->with('invitations', 'account.country', 'client.contacts', 'client.country', 'invoice_items')
 				->firstOrFail();
 
-			$api = CfdiSettings::first();
-			if (sizeof($api) > 0) {
+			try {
+				$response = Cfdi::sendCfdi($publicId, $invoice);
+				//dd($response);
+			} catch (Exception $e) {
+				Session::flash('error', $e->getMessage());
+			}
+			if ($response->codigo == 200) {
+				$files = $response->archivos;
+				$upd = (object)array('xml' => $files->xml, 'pdf' => $files->pdf, 'cancel_id' => $response->uuid, 'sale_id' => $invoice->id);
+				Cfdi::saveCFDI($upd);
+
 				try {
-					$response = Cfdi::sendCfdi($publicId, $invoice);
-
-				} catch (Exception $e) {
-					Session::flash('error', $e->getMessage());
+					Cfdi::emailCfdi($files, $invoice);
+				} catch (Exception $exc) {
+					Session::flash('error', $exc->getTraceAsString());
 				}
-				if ($response->codigo == 200) {
-					$files = $response->archivos;
-					$upd = (object)array('xml' => $files->xml, 'pdf' => $files->pdf, 'cancel_id' => $response->uuid, 'sale_id' => $invoice->id);
-					Cfdi::saveCFDI($upd);
+				//Session::flash('message', trans('texts.cfdifilescreated'));
 
-					try {
-						Cfdi::emailCfdi($files, $invoice);
-					} catch (Exception $exc) {
-						Session::flash('error', $exc->getTraceAsString());
-					}
-					Session::flash('message', trans('texts.cfdifilescreated'));
-				} else {
-					Session::flash('error', trans('texts.cfdifileserror') . '.<br> #<strong>' . $response->codigo . '</strong>: <i>' . $response->mensaje . '</i>.');
-				}
+				return['data'=>($invoice),'response'=>json_encode($response)];
+
 			} else {
-				Session::flash('error', trans('texts.apisettingserror'));
+				Session::flash('error', trans('texts.cfdifileserror') . '.<br> #<strong>' . $response->codigo . '</strong>: <i>' . $response->mensaje . '</i>.');
+				return Redirect::back();
 			}
 		} else {
 			$invoice = Invoice::where('public_id', '=', $publicId)->where('account_id', '=', Auth::user()->account_id)->first();
 			if (count($invoice))
 				InvoiceController::cancelCfdi($invoice->id);
+			return Redirect::back();
 		}
-		return Redirect::back();
 	}
 
 	public function requestFile($invoiceId, $tipo)
@@ -664,24 +675,109 @@ class InvoiceController extends \BaseController
 		}
 	}
 
-	public static function makePdf()
-	{
-		echo '<script src="{{ asset(\'js/pdf_viewer.js\') }}" type="text/javascript"></script>';
-	}
+	public function makePdf()
+    {
+		$datos=Session::get('data');
+		$response=Session::get('response');
+		$response=json_encode($response);
+
+		//dd(Input::all());
+        $account = Account::where('id', '=', Auth::user()->account_id)->first();
+        $data = $datos;
+
+        if (file_exists($account->getLogoPath()))
+            $exist = true;
+        else
+            $exist = false;
+
+        $labels = $account->getInvoiceLabels();
+        echo '<script src="' . asset('js/jquery.1.9.1.min.js') . '"></script><script src="' . asset('js/qr.min.js') . '"></script><script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script><script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js"></script><script src="' . asset('js/jspdf.source.js') . '"></script><script src="' . asset('built.js') . '"></script>
+		<script src="' . asset('js/pdf_viewer.js') . '" type="text/javascript"></script><script src="' . asset('js/compatibility.js') . '" type="text/javascript"></script><script src="' . asset('js/makePdf.js') . '"></script>';
+
+        echo '<script>
+				var currencies = ' . Currency::remember(120)->get() . ';
+				  var currencyMap = {};
+				  for (var i=0; i<currencies.length; i++) {
+					var currency = currencies[i];
+					currencyMap[currency.id] = currency;
+				  }
+
+
+			  window.logoImages = {};
+
+			  logoImages.imageLogo1 = "' . HTML::image_data("images/report_logo1.jpg") . '";
+			  logoImages.imageLogoWidth1 =120;
+			  logoImages.imageLogoHeight1 = 40;
+
+			  logoImages.imageLogo2 = "' . HTML::image_data('images/report_logo2.jpg') . '";
+			  logoImages.imageLogoWidth2 =325/2;
+			  logoImages.imageLogoHeight2 = 81/2;
+
+			  logoImages.imageLogo3 = "' . HTML::image_data('images/report_logo3.jpg') . '";
+			  logoImages.imageLogoWidth3 =325/2;
+			  logoImages.imageLogoHeight3 = 81/2;
+			  var exist="' . json_encode($exist) . '";
+			  exist=exist==="true";
+
+
+
+			  var NINJA = NINJA || {};
+			  NINJA.primaryColor = "' . $account->primary_color . '";
+			  NINJA.secondaryColor = "' . $account->secondary_color . '";
+
+			  NINJA.parseFloat = function(str) {
+				if (!str) return \'\';
+				str = (str+\'\').replace(/[^0-9/./-]/g, \'\');
+				return window.parseFloat(str);
+			  }
+
+			  if (exist)
+				  if (window.invoice) {
+					invoice.image = "' . HTML::image_data($account->getLogoPath()) . '";
+					invoice.imageWidth = "' . $account->getLogoWidth() . '";
+					invoice.imageHeight = "' . $account->getLogoHeight() . '";
+				  }
+
+				  function formatMoney(value, currency_id, hide_symbol) {
+    				value = NINJA.parseFloat(value);
+				if (!currency_id) currency_id = ' . Session::get(SESSION_CURRENCY, DEFAULT_CURRENCY) . ';
+			var currency = currencyMap[currency_id];
+			return accounting.formatMoney(value, hide_symbol ? "" : currency.symbol, currency.precision, currency.thousand_separator, currency.decimal_separator);
+			}
+
+			function generateQr(rfc_emisor,rfc_receptor,formato,uid)
+			{
+			    var data="?re=" + rfc_emisor + "&rr=" + rfc_receptor + "&tt=" + formato + "&id=" + uid;
+               var matrix=qr.toDataURL({
+                  mime: "image/jpeg",
+                  value: data
+                });
+
+                return matrix;
+            }
+		  </script>';
+
+        echo '<script>
+			var invoiceLabels =' . json_encode($labels) . ';
+			savePdf(' . $data . ','.$response.');</script>';
+
+
+    }
 
 
 	public function test()
 	{
 
 		$account=Account::where('id','=',Auth::user()->account_id)->first();
-		$data=  '{"invoice":{"client":{"public_id":"1","name":"Lala","id_number":"","vat_number":"","work_phone":"","custom_value1":"","custom_value2":"","private_notes":"","address1":"Mira","address2":"200","city":"Tijuana","state":"Baja California","postal_code":"22207","country_id":"484","size_id":"2","industry_id":"3","currency_id":"1","website":"","payment_terms":"7","contacts":[{"public_id":"1","first_name":"Lala","last_name":"Lolo","email":"cdfi@yopmail.com","phone":"1234567890","send_invoice":true,"account_id":"7","user_id":"7","client_id":"6","created_at":"2015-01-21 19:07:45","updated_at":"2015-01-22 20:44:56","deleted_at":null,"is_primary":"1","last_login":null}],"mapping":{"contacts":{}},"country":{"id":"484","name":"Mexico"},"user_id":"7","account_id":"7","created_at":"2015-01-21 19:07:45","updated_at":"2015-01-22 20:44:56","deleted_at":null,"balance":"12500.00","paid_to_date":null,"last_login":null,"is_deleted":"0","rfc":"AAD990814BP7","suburb":"Laracast"},"account":{"id":"7","timezone_id":"6","date_format_id":"7","datetime_format_id":"7","currency_id":"1","created_at":"2015-01-21 18:58:32","updated_at":"2015-01-26 20:53:36","deleted_at":null,"name":"Luis Josue","ip":"187.184.159.189","account_key":"Z6655V2nQDHozlpAxpxVWQEZxPo3h70t","last_login":"2015-01-23 21:59:48","address1":"Casa Blacan","address2":"20500","city":"Tijuana","state":"Baja California","postal_code":"22207","country_id":"484","invoice_terms":null,"email_footer":null,"industry_id":"12","size_id":null,"invoice_taxes":"1","invoice_item_taxes":"0","invoice_design_id":"1","work_phone":"6642182508","work_email":"luis@solucioname.net","language_id":"7","pro_plan_paid":null,"custom_label1":null,"custom_value1":null,"custom_label2":null,"custom_value2":null,"custom_client_label1":null,"custom_client_label2":null,"fill_products":"1","update_products":"1","primary_color":null,"secondary_color":null,"hide_quantity":"0","hide_paid_to_date":"0","custom_invoice_label1":null,"custom_invoice_label2":null,"custom_invoice_taxes1":null,"custom_invoice_taxes2":null,"vat_number":"","invoice_design":null,"invoice_number_prefix":null,"invoice_number_counter":"24","quote_number_prefix":null,"quote_number_counter":"1","share_counter":"1","id_number":"","rfc":"AAD990814BP7","suburb":"Los Lobos"},"id":"","discount":"1","is_amount_discount":"0","frequency_id":"1","terms":"213","set_default_terms":true,"public_notes":"1231","po_number":"0024","invoice_date":"Mon January 26, 2015","invoice_number":"0024","due_date":"Mon February 2, 2015","start_date":"Mon January 26, 2015","end_date":"","tax_name":"IVA","tax_rate":"16","is_recurring":false,"invoice_status_id":0,"invoice_items":[{"product_key":"pokebola","notes":"pokebola","cost":"100.00","qty":"2","tax_name":"IVA","tax_rate":"16","actionsVisible":false,"_tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"prettyQty":2,"prettyCost":"100.00","mapping":{"tax":{}},"wrapped_notes":"pokebola"},{"product_key":"","notes":"","cost":0,"qty":0,"tax_name":"","tax_rate":0,"actionsVisible":false,"_tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"prettyQty":"","prettyCost":"","mapping":{"tax":{}},"wrapped_notes":""}],"amount":0,"balance":0,"invoice_design_id":"2","custom_value1":"","custom_value2":"","custom_taxes1":false,"custom_taxes2":false,"mapping":{"client":{},"invoice_items":{},"tax":{}},"_tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"wrapped_terms":"213","wrapped_notes":"1231"},"tax_rates":[{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""}],"invoice_taxes":true,"invoice_item_taxes":true,"mapping":{"invoice":{},"tax_rates":{}},"clientLinkText":"Editar detalles del cliente","taxBackup":false}';
+		$data= '{"invoice":{"client":{"public_id":"1","name":"Pokemon Co.","id_number":"129340","vat_number":"AAD990814BP7","work_phone":"6642182508","custom_value1":"","custom_value2":"","private_notes":"","address1":"Casa Blanca","address2":"200","city":"Tijuana","state":"Baja California","postal_code":"20500","country_id":"484","size_id":"","industry_id":"12","currency_id":"1","website":"www.pokemon.com","payment_terms":"0","contacts":[{"public_id":"1","first_name":"Luis","last_name":"Uscanga","email":"luis@solucioname.net","phone":"6642182508","send_invoice":true,"account_id":"2","user_id":"2","client_id":"1","created_at":"2015-01-29 21:48:46","updated_at":"2015-01-29 21:48:46","deleted_at":null,"is_primary":"1","last_login":null}],"mapping":{"contacts":{}},"country":{"id":"484","name":"Mexico"},"user_id":"2","account_id":"2","created_at":"2015-01-29 21:48:46","updated_at":"2015-01-29 21:48:46","deleted_at":null,"balance":null,"paid_to_date":null,"last_login":null,"is_deleted":"0","rfc":"AAD990814BP7","suburb":"Los Lobos"},"account":{"id":"2","timezone_id":"6","date_format_id":"2","datetime_format_id":"2","currency_id":"1","created_at":"2015-01-29 21:28:14","updated_at":"2015-01-29 21:42:09","deleted_at":null,"name":"Luis S.A","ip":"127.0.0.1","account_key":"v0V3cENq6QzD4fOcAPLsZOr5yaupJt8V","last_login":"2015-01-29 21:28:15","address1":"Blvd Casa Blanca","address2":"2000","city":"Tijuana","state":"Baja California","postal_code":"22207","country_id":"484","invoice_terms":null,"email_footer":null,"industry_id":"12","size_id":null,"invoice_taxes":"1","invoice_item_taxes":"0","invoice_design_id":"1","work_phone":"6642182508","work_email":"luis@solucioname.net","language_id":"7","pro_plan_paid":null,"custom_label1":null,"custom_value1":null,"custom_label2":null,"custom_value2":null,"custom_client_label1":null,"custom_client_label2":null,"fill_products":"1","update_products":"1","primary_color":null,"secondary_color":null,"hide_quantity":"0","hide_paid_to_date":"0","custom_invoice_label1":null,"custom_invoice_label2":null,"custom_invoice_taxes1":null,"custom_invoice_taxes2":null,"vat_number":"029320","invoice_design":null,"invoice_number_prefix":null,"invoice_number_counter":"1","quote_number_prefix":null,"quote_number_counter":"1","share_counter":"1","id_number":"91023","rfc":"AAD990814BP7","suburb":"Los Lobos"},"id":"","discount":"1","is_amount_discount":"0","frequency_id":"1","terms":"No se a que se refiere","set_default_terms":true,"public_notes":"Captura muchos pokemon","po_number":"0001","invoice_date":"29-Jan-2015","invoice_number":"0001","due_date":"","start_date":"29-Jan-2015","end_date":"","tax_name":"IVA","tax_rate":"16","is_recurring":false,"invoice_status_id":0,"invoice_items":[{"product_key":"Pokebola","notes":"Utilizada por entrenadores novatos es la mas comun","cost":"100","qty":"8","tax_name":"IVA","tax_rate":"16","actionsVisible":false,"_tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"prettyQty":8,"prettyCost":"100","mapping":{"tax":{}},"wrapped_notes":"Utilizada por entrenadores novatos es la mas comun"},{"product_key":"","notes":"","cost":0,"qty":0,"tax_name":"","tax_rate":0,"actionsVisible":false,"_tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"tax":{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},"prettyQty":"","prettyCost":"","mapping":{"tax":{}},"wrapped_notes":""}],"amount":0,"balance":0,
+		"invoice_design_id":"2","custom_value1":"","custom_value2":"","custom_taxes1":false,"custom_taxes2":false,"mapping":{"client":{},"invoice_items":{},"tax":{}},"_tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"tax":{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},"wrapped_terms":"No se a que se refiere","wrapped_notes":"Captura muchos pokemon"},"tax_rates":[{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""},{"public_id":"","rate":"16","name":"IVA","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":16,"displayName":"16% IVA"},{"public_id":"","rate":0,"name":"","is_deleted":false,"is_blank":false,"actionsVisible":false,"prettyRate":"","displayName":""}],"invoice_taxes":true,"invoice_item_taxes":true,"mapping":{"invoice":{},"tax_rates":{}},"clientLinkText":"Editar detalles del cliente","taxBackup":false}';
 		if(file_exists($account->getLogoPath()))
 			$exist=true;
 		else
 			$exist=false;
 
 		$labels=$account->getInvoiceLabels();
-		echo '<script src="'.asset('js/jquery.1.9.1.min.js').'"></script><script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script><script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js"></script><script src="'.asset('js/jspdf.source.js').'"></script><script src="'.asset('built.js').'"></script>
+		echo '<script src="'.asset('js/jquery.1.9.1.min.js').'"></script><script src="'.asset('js/qr.min.js').'"></script><script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script><script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.min.js"></script><script src="'.asset('js/jspdf.source.js').'"></script><script src="'.asset('built.js').'"></script>
 		<script src="' . asset('js/pdf_viewer.js') . '" type="text/javascript"></script><script src="' . asset('js/compatibility.js') . '" type="text/javascript"></script><script src="' .  asset('js/makePdf.js') . '"></script>';
 
 		echo '<script>
@@ -721,8 +817,6 @@ class InvoiceController extends \BaseController
 				return window.parseFloat(str);
 			  }
 
-
-
 			  if (exist)
 				  if (window.invoice) {
 					invoice.image = "'.HTML::image_data($account->getLogoPath()).'";
@@ -736,6 +830,17 @@ class InvoiceController extends \BaseController
 			var currency = currencyMap[currency_id];
 			return accounting.formatMoney(value, hide_symbol ? "" : currency.symbol, currency.precision, currency.thousand_separator, currency.decimal_separator);
 			}
+
+			function generateQr(rfc_emisor,rfc_receptor,formato,uid)
+			{
+			    var data="?re=" + rfc_emisor + "&rr=" + rfc_receptor + "&tt=" + formato + "&id=" + uid;
+               var matrix=qr.toDataURL({
+                  mime: "image/jpeg",
+                  value: data
+                });
+
+                return matrix;
+            }
 		  </script>';
 
 			echo '<script>

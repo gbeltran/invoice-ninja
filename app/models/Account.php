@@ -211,7 +211,13 @@ class Account extends Eloquent
 			'client_id',
 			'client_address',
 			'client_country',
-			'client_email'
+			'client_email',
+			'rfc_emisor',
+			'razon_social',
+			'folio_fiscal',
+			'numero_sat',
+			'numero_certificado',
+			'fecha_certificacion'
 		];
 
 		foreach ($fields as $field)
